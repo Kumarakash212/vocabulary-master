@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Master - Learn English to Hindi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+        }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        header p { font-size: 1.1rem; opacity: 0.9; }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: white;
+            color: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+        .stat-box p { font-size: 0.9rem; opacity: 0.9; }
+
+        .word-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .word-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+        .word-item:hover {
+            background: #f5f5f5;
+            transform: translateX(5px);
+        }
+        .word-item .en { font-size: 1.3rem; font-weight: bold; color: #764ba2; }
+        .word-item .hi { font-size: 1.1rem; color: #333; margin-top: 5px; }
+        .word-item .ex { font-size: 0.9rem; color: #666; margin-top: 5px; font-style: italic; }
+        .word-item .trans { font-size: 0.85rem; color: #999; margin-top: 3px; }
+
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            height: 350px;
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .flashcard-back {
+            background: white;
+            color: #333;
+            transform: rotateY(180deg);
+            border: 3px solid #764ba2;
+        }
+        .flashcard-front h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .flashcard-front p { font-size: 1rem; opacity: 0.8; }
+        .flashcard-back h2 { font-size: 2rem; color: #764ba2; margin-bottom: 15px; }
+        .flashcard-back .meaning { font-size: 1.5rem; margin-bottom: 10px; }
+        .flashcard-back .example { font-size: 1rem; color: #666; font-style: italic; text-align: center; }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .quiz-option:hover {
+            border-color: #764ba2;
+            background: #f8f5ff;
+        }
+        .quiz-option.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+        .quiz-option.wrong {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 40px;
+        }
+        .result-box h2 { font-size: 2.5rem; color: #764ba2; margin-bottom: 20px; }
+        .result-box .score { font-size: 4rem; font-weight: bold; color: #667eea; }
+
+        .hidden { display: none !important; }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #764ba2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #764ba2; border-radius: 4px; }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Vocabulary Master</h1>
+            <p>Learn English to Hindi | Flashcards | Quiz | Dictionary</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="showTab('dictionary')">📖 Dictionary</button>
+            <button class="nav-btn" onclick="showTab('flashcards')">🎴 Flashcards</button>
+            <button class="nav-btn" onclick="showTab('quiz')">🎯 Quiz</button>
+            <button class="nav-btn" onclick="showTab('typing')">⌨️ Typing</button>
+        </div>
+
+        <!-- Dictionary Tab -->
+        <div id="dictionary" class="tab-content">
+            <div class="card">
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3 id="totalWords">0</h3>
+                        <p>Total Words</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3 id="learnedWords">0</h3>
+                        <p>Learned</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3 id="masteredWords">0</h3>
+                        <p>Mastered</p>
+                    </div>
+                </div>
+                <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search English or Hindi word..." onkeyup="searchWords()">
+                <div class="word-list" id="wordList"></div>
+            </div>
+        </div>
+
+        <!-- Flashcards Tab -->
+        <div id="flashcards" class="tab-content hidden">
+            <div class="card">
+                <div class="section-title">Click card to flip • Use arrows to navigate</div>
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h2 id="fcWord">Word</h2>
+                            <p>Click to see meaning</p>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <h2 id="fcWordBack">Word</h2>
+                            <div class="meaning" id="fcMeaning">Meaning</div>
+                            <div class="example" id="fcExample">Example sentence</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="prevCard()">◀ Previous</button>
+                    <button class="btn btn-primary" onclick="markLearned()">✓ Learned</button>
+                    <button class="btn btn-secondary" onclick="nextCard()">Next ▶</button>
+                </div>
+                <div style="text-align:center; margin-top:15px; color:#666;">
+                    Card <span id="fcCurrent">1</span> of <span id="fcTotal">1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quiz" class="tab-content hidden">
+            <div class="card">
+                <div class="section-title">Multiple Choice Quiz</div>
+                <div class="progress-bar"><div class="progress-fill" id="quizProgress" style="width:0%"></div></div>
+                <div id="quizContainer">
+                    <h2 style="margin-bottom:20px; color:#333;" id="quizQuestion">What is the Hindi meaning of...?</h2>
+                    <div id="quizOptions"></div>
+                </div>
+                <div id="quizResult" class="result-box hidden">
+                    <h2>🎉 Quiz Complete!</h2>
+                    <div class="score" id="finalScore">0/0</div>
+                    <p style="margin:20px 0; font-size:1.2rem;" id="scoreMessage">Great job!</p>
+                    <button class="btn btn-primary" onclick="restartQuiz()">Restart Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Tab -->
+        <div id="typing" class="tab-content hidden">
+            <div class="card">
+                <div class="section-title">Type the Hindi Meaning</div>
+                <div class="progress-bar"><div class="progress-fill" id="typeProgress" style="width:0%"></div></div>
+                <div id="typeContainer" style="text-align:center; padding:30px;">
+                    <h1 style="font-size:3rem; color:#764ba2; margin-bottom:10px;" id="typeWord">Word</h1>
+                    <p style="color:#666; margin-bottom:30px;" id="typeHint">Hint will appear here</p>
+                    <input type="text" class="search-box" id="typeInput" placeholder="Type Hindi meaning here..." style="text-align:center; max-width:400px;" onkeypress="if(event.key==='Enter') checkType()">
+                    <br><br>
+                    <button class="btn btn-primary" onclick="checkType()">Submit</button>
+                    <button class="btn btn-secondary" onclick="skipType()">Skip</button>
+                    <div id="typeFeedback" style="margin-top:20px; font-size:1.2rem;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== VOCABULARY DATA ====================
+        // Format: [English, Hindi_Meaning, Transliteration, Example_Sentence]
+        const vocabulary = [
+            ["abandon", "त्याग देना", "tyaag dena", "The village had been hastily abandoned."],
+            ["abashed", "शर्मिंदा", "sharminda", "He glanced at Juliet accusingly and she looked suitably abashed."],
+            ["abbreviation", "संक्षिप्त रूप", "sankshipt roop", "PC stands for personal computer."],
+            ["abhorrent", "घृणास्पद", "ghrinaspad", "I find the idea totally abhorrent."],
+            ["ability", "क्षमता", "kshamta", "The school does nothing for children of high ability."],
+            ["ablaze", "जलता हुआ", "jalta hua", "By the time firefighters were called the house was well ablaze."],
+            ["able", "सक्षम", "saksham", "He is well able to take care of himself."],
+            ["abode", "निवास", "nivas", "Welcome to my humble abode."],
+            ["abolish", "समाप्त करना", "samapt karna", "Some MPs want to abolish the tax altogether."],
+            ["abortion", "गर्भपात", "garbhpat", "When she got pregnant at 16 she decided to have an abortion."],
+            ["abscess", "फोड़ा", "phoda", "I developed an abscess on my neck."],
+            ["absence", "अनुपस्थिति", "anupasthiti", "You will not be paid for the full period of absence."],
+            ["absent", "अनुपस्थित", "anupasthit", "He asked for leave of absence from the army."],
+            ["absorb", "अवशोषित करना", "avshoshit karna", "Nutrients are absorbed into the bloodstream."],
+            ["absorbed", "तल्लीन", "talleen", "He was totally absorbed in his book."],
+            ["abstract", "सार", "saar", "Enterprising is not an adjective you would apply to him!"],
+            ["absurd", "हास्यास्पद", "hasyaspad", "She found the whole concept faintly absurd."],
+            ["abundance", "प्रचुरता", "prachurta", "We were amazed by the sheer abundance of food."],
+            ["abuse", "दुर्व्यवहार", "durvyavahar", "The legal system is open to abuse."],
+            ["abusive", "अपमानजनक", "apmaanjnak", "He became openly abusive."],
+            ["academic", "शैक्षिक", "shaikshik", "The distinction being made is purely academic."],
+            ["academy", "अकादमी", "academy", "He later studied at the Royal Academy."],
+            ["accelerate", "तेज़ करना", "tez karna", "The runners accelerated smoothly round the bend."],
+            ["acceleration", "त्वरण", "tvaran", "There has been a rapid acceleration in the growth of industry."],
+            ["accelerator", "एक्सीलरेटर", "accelerator", "She put her foot on the accelerator."],
+            ["accent", "लहज़ा", "lahza", "She had a pronounced Scottish accent."],
+            ["accept", "स्वीकार करना", "svikar karna", "She graciously accepted my apology."],
+            ["acceptable", "स्वीकार्य", "svikary", "Yogurt is a perfectly acceptable substitute for cream."],
+            ["acceptance", "स्वीकृति", "svikriti", "Alternative medicines are now winning greater acceptance among doctors."],
+            ["access", "पहुँच", "pahunch", "Men and women should have equal access to education."],
+            ["accessible", "पहुँच योग्य", "pahunch yogy", "The museum is easily accessible by public transport."],
+            ["accessory", "सहायक", "sahayak", "This silk scarf is the perfect accessory for stylish summer evenings."],
+            ["accident", "दुर्घटना", "durghatna", "Their boat sank in a freak accident."],
+            ["accidental", "आकस्मिक", "aaksmik", "The play opened last week to universal acclaim."],
+            ["acclaim", "प्रशंसा", "prashansa", "Her latest novel has won great critical acclaim."],
+            ["accolade", "सम्मान", "samman", "Four restaurants have been awarded the highest accolade of a three-star rating."],
+            ["accommodate", "समायोजित करना", "samayojit karna", "It was a large hall, where a lot of people could be comfortably accommodated."],
+            ["accommodation", "आवास", "aavas", "We need more secure accommodation for young prisoners."],
+            ["accompaniment", "संगत", "sangat", "These wines also make a good accompaniment for vegetarian dishes."],
+            ["accomplice", "सहअपराधी", "sahapradhi", "She became his unwitting accomplice in the robbery."],
+            ["accomplish", "पूरा करना", "pura karna", "A rather difficult task had been successfully accomplished."],
+            ["accomplished", "कुशल", "kushal", "He came to London in 1976, already accomplished in the English language."],
+            ["accomplishment", "उपलब्धि", "uplabdhi", "Her technical accomplishment on the piano is startling."],
+            ["accord", "समझौता", "samjhauta", "A peace accord was reached on 26 March."],
+            ["account", "खाता", "khata", "He gave us a blow-by-blow account of the incident."],
+            ["accountability", "जवाबदेही", "jawabdehi", "This process of centralization further weakens accountability."],
+            ["accountable", "जवाबदेह", "jawabdeh", "The directors are held accountable by the shareholders."],
+            ["accountancy", "लेखाकर्म", "lekhakarm", "It had taken considerable creative accountancy on my part."],
+            ["accountant", "लेखाकार", "lekhakar", "We talked to the company's chief accountant."],
+            ["accustom", "आदी करना", "adi karna", "She had grown accustomed to his long absences."],
+            ["ace", "एक", "ek", "Rafter has served fifteen aces in the match so far."],
+            ["ache", "दर्द", "dard", "I felt the familiar ache in my lower back."],
+            ["achieve", "प्राप्त करना", "prapt karna", "The present law has failed to achieve its objectives."],
+            ["achievement", "उपलब्धि", "uplabdhi", "This was no mean achievement for the government."],
+            ["acid", "अम्ल", "aml", "You will need a special chemical to neutralize the acid."],
+            ["acknowledge", "स्वीकार करना", "svikar karna", "The peace settlement effectively acknowledged the country's independence."],
+            ["acknowledgement", "स्वीकृति", "svikriti", "I wrote to them but never got any acknowledgement."],
+            ["acne", "मुहांसे", "muhase", "He had terrible acne when he was younger."],
+            ["acquaintance", "परिचित", "parichit", "I bumped into a casual acquaintance in town."],
+            ["acquainted", "परिचित", "parichit", "Are you fully acquainted with the facts?"],
+            ["acquisition", "अधिग्रहण", "adhigrahan", "The company has just made another acquisition."],
+            ["acquittal", "दोषमुक्ति", "doshmukti", "The jury returned an acquittal after only seventeen minutes."],
+            ["acre", "एकड़", "ekad", "Note at MEASURE"],
+            ["act", "कार्य", "karya", "The UN must perform a difficult balancing act between the two sides in the conflict."],
+            ["acting", "अभिनय", "abhinay", "The film is spoiled by some very wooden acting."],
+            ["action", "कार्रवाई", "karrawai", "The situation calls for drastic action."],
+            ["active", "सक्रिय", "sakriy", "Try to keep active in the cold weather."],
+            ["activity", "गतिविधि", "gatividhi", "There was a flurry of activity as the film star appeared on the balcony."],
+            ["actor", "अभिनेता", "abhineta", "You're a born actor!"],
+            ["actress", "अभिनेत्री", "abinetri", "The same actor plays three different parts in the film."],
+            ["acumen", "तेज़ दिमाग", "tez dimag", "He had demonstrated considerable business acumen."],
+            ["acupuncture", "सूई चिकित्सा", "sooi chikitsa", "My doctor recommended a course of acupuncture."],
+            ["ad", "विज्ञापन", "vigyanapan", "You can put your own small ads in local papers."],
+            ["adapt", "अनुकूलित करना", "anukoolit karna", "The children have adapted well to the heat."],
+            ["adaptable", "अनुकूलनीय", "anukoolniy", "Many old market buildings have proved highly adaptable."],
+            ["adaptation", "अनुकूलन", "anukoolan", "The process of adaptation to a new school is difficult for some children."],
+            ["add", "जोड़ना", "jodna", "He added softly, 'I missed you.'"],
+            ["addict", "व्यसनी", "vyasani", "Many young boys become computer addicts."],
+            ["addicted", "व्यसनी", "vyasani", "She had become addicted to tranquillizers."],
+            ["addiction", "लत", "lat", "A habit can easily become an addiction."],
+            ["addictive", "लत लगाने वाला", "lat lagane wala", "Cocaine is a highly addictive drug."],
+            ["addition", "योग", "yog", "We have made several additions to the collection recently."],
+            ["address", "पता", "pata", "Please leave a contact address."],
+            ["adept", "निपुण", "nipun", "He was highly adept at avoiding trouble."],
+            ["adequate", "पर्याप्त", "paryapt", "The trains were not considered adequate for use on the modern railways."],
+            ["adhere", "चिपकना", "chipkna", "The tiles may not adhere properly if you do not use the correct glue."],
+            ["adherence", "पालन", "palan", "strict adherence to a diet"],
+            ["adjacent", "निकट", "nikat", "The vineyards of Verzy lie adjacent to those of Verzenay."],
+            ["adjective", "विशेषण", "visheshan", "Attributive adjectives precede the noun."],
+            ["adjourn", "स्थगित करना", "sthagit karna", "The trial was adjourned indefinitely."],
+            ["adjust", "समायोजित करना", "samayojit karna", "It is important to have equipment that can be finely adjusted."],
+            ["adjustable", "समायोज्य", "samayojya", "The straps are fully adjustable to fit any size."],
+            ["adjustment", "समायोजन", "samayojan", "The mechanic made the necessary adjustments to the engine."],
+            ["administer", "प्रशासन करना", "prashasan karna", "The legislation was to be centrally administered by the Board of Education."],
+            ["administration", "प्रशासन", "prashasan", "On September 27 a new coalition administration was formed."],
+            ["admirable", "प्रशंसनीय", "prashansniy", "She had acted in ways that he found wholly admirable."],
+            ["admiral", "एडमिरल", "admiral", "Note at RANK"],
+            ["admiration", "प्रशंसा", "prashansa", "I have the greatest admiration for the nurses."],
+            ["admire", "प्रशंसा करना", "prashansa karna", "He admires you enormously."],
+            ["admirer", "प्रशंसक", "prashansak", "Perhaps the flowers were sent by a secret admirer."],
+            ["admission", "प्रवेश", "pravesh", "He's applied for admission to the local college."],
+            ["admit", "स्वीकार करना", "svikar karna", "He freely admitted that he had taken bribes."],
+            ["admittance", "प्रवेश", "pravesh", "They were unable to gain admittance to the hall."],
+            ["adolescence", "किशोरावस्था", "kishoravastha", "She developed the problem in early adolescence."],
+            ["adolescent", "किशोर", "kishor", "young spotty awkward, disturbed"],
+            ["adopt", "गोद लेना", "god lena", "The child has now been legally adopted."],
+            ["adoption", "दत्तक ग्रहण", "dattak grahan", "She has decided to put the child up for adoption."],
+            ["adore", "पूजना", "poojna", "She absolutely adores her grandchildren."],
+            ["adrenalin", "एड्रेनालिन", "adrenalin", "He felt a surge of pure adrenalin as he won the race."],
+            ["adrift", "बहता हुआ", "behta hua", "Their boat had been set adrift."],
+            ["adult", "वयस्क", "vayask", "This book will definitely appeal to teenagers and young adults."],
+            ["adultery", "व्यभिचार", "vyabhichar", "He admitted adultery with several women."],
+            ["adulthood", "वयस्कता", "vayaskata", "children who lose their parents before reaching adulthood"],
+            ["advance", "अग्रिम", "agrim", "The regiment made an advance on the enemy lines."],
+            ["advanced", "उन्नत", "unnat", "a highly advanced economy"],
+            ["advancement", "उन्नति", "unnati", "There are good opportunities for advancement within the company."],
+            ["advantage", "लाभ", "labh", "Breastfeeding offers a clear advantage to your baby."],
+            ["advantageous", "लाभदायक", "labhdayak", "Membership of the union could prove advantageous."],
+            ["adventure", "साहसिक कार्य", "sahasik karya", "We had a little adventure yesterday."],
+            ["adverb", "क्रिया विशेषण", "kriya visheshan", "Adverbs qualify verbs."],
+            ["adversary", "प्रतिद्वंद्वी", "pratidvandvi", "The British considered him a worthy adversary."],
+            ["adversity", "विपत्ति", "vipatti", "When faced with adversity she was never tempted to give up."],
+            ["advert", "विज्ञापन", "vigyanapan", "I put an advert in the local newspaper."],
+            ["advertise", "विज्ञापन देना", "vigyanapan dena", "These products have been advertised very heavily."],
+            ["advertisement", "विज्ञापन", "vigyanapan", "The classified advertisements are on page 25."],
+            ["advice", "सलाह", "salaha", "That's very sound advice."],
+            ["advisable", "उचित", "uchit", "We thought it advisable to seek police assistance."],
+            ["advise", "सलाह देना", "salaha dena", "I strongly advise you not to do this."],
+            ["adviser", "सलाहकार", "salahkar", "Do you have a financial adviser?"],
+            ["advocate", "समर्थक", "samarthak", "She's a staunch advocate of free trade."],
+            ["aerial", "एरियल", "aerial", "The aerial receives signals from the ground."],
+            ["aeroplane", "हवाई जहाज", "havai jahaz", "I've never flown in an aeroplane."],
+            ["affair", "मामला", "mamla", "She saw the whole affair as a great joke."],
+            ["affect", "प्रभावित करना", "prabhavit karna", "Sales did not seem unduly affected."],
+            ["affection", "स्नेह", "sneh", "He just wants a bit of affection."],
+            ["affinity", "आकर्षण", "aakarshan", "I felt a great affinity with the people of the Highlands."],
+            ["afflict", "पीड़ित करना", "peedit karna", "He's badly afflicted with a skin disorder."],
+            ["afford", "वहन करना", "vahan karna", "She can well afford to pay for herself."],
+            ["affront", "अपमान", "apman", "This remark caused affront to many people."],
+            ["afloat", "तैरता हुआ", "tairta hua", "The children set their new boat afloat on the lake."],
+            ["afraid", "डरा हुआ", "dara hua", "What has made you so deeply afraid of your boss?"],
+            ["aftermath", "परिणाम", "parinam", "The president visited the region in the immediate aftermath of the disaster."],
+            ["afternoon", "दोपहर", "dopahar", "We spent the afternoon sitting by the pool."],
+            ["age", "उम्र", "umra", "He was sent away to school at an early age."],
+            ["agenda", "कार्यसूची", "karyasuchi", "A clear agenda will win votes in the next election."],
+            ["agent", "एजेंट", "agent", "The company has developed sales through local agents in key markets."],
+            ["aggravate", "बिगाड़ना", "bigadna", "Their negative reactions have greatly aggravated the situation."],
+            ["aggression", "आक्रमण", "aakraman", "The president announced that the country would not tolerate foreign aggression."],
+            ["aggressive", "आक्रामक", "aakramak", "Watching violence on TV makes some children more aggressive."],
+            ["aggrieved", "पीड़ित", "peedit", "The villagers felt deeply aggrieved by the closing of the railway station."],
+            ["agility", "फुर्ती", "furti", "She shows great agility on the tennis court."],
+            ["agitated", "उत्तेजित", "uttejit", "He sounded very agitated on the phone."],
+            ["agitation", "आंदोलन", "aandolan", "The organization is turning to political agitation in order to achieve its aims."],
+            ["agony", "यंत्रणा", "yantrana", "The little creature squirmed in its death agonies."],
+            ["agree", "सहमत होना", "sahmat hona", "I very much agree with the prime minister."],
+            ["agreeable", "सुखद", "sukhad", "It all sounds very agreeable."],
+            ["agreement", "समझौता", "samjhauta", "We are working towards a formal ceasefire agreement."],
+            ["agriculture", "कृषि", "krishi", "50% of the country's population depend on agriculture."],
+            ["aid", "सहायता", "sahayata", "The country relies on foreign aid."],
+            ["aide", "सहायक", "sahayak", "one of the prime minister's closest aides"],
+            ["Aids", "एड्स", "aids", "Once you are infected you will sooner or later develop full-blown Aids."],
+            ["ailment", "रोग", "rog", "I got all the usual childhood ailments."],
+            ["aim", "लक्ष्य", "lakshya", "His sole aim in life is to enjoy himself."],
+            ["air", "हवा", "hava", "We need some fresh air in this stuffy room!"],
+            ["aircraft", "विमान", "viman", "The aircraft was flown by a young American pilot."],
+            ["airline", "विमान कंपनी", "viman company", "The airline operates mainly between Florida and Puerto Rico."],
+            ["airport", "हवाई अड्डा", "havai adda", "We will fly from Chicago's O'Hare airport."],
+            ["airspace", "हवाई क्षेत्र", "havai kshetra", "The jet had crossed into Russian airspace."],
+            ["ajar", "अधखुला", "adhkhula", "The office door stood ajar."],
+            ["akin", "समान", "saman", "This game is closely akin to rugby."],
+            ["alarm", "अलार्म", "alarm", "There is growing public alarm at this increase in crime."],
+            ["alarmed", "चिंतित", "chintit", "She began to grow alarmed when she realized how late it was."],
+            ["alarming", "चिंताजनक", "chintajanak", "I find the prospect of being without work extremely alarming."],
+            ["album", "एल्बम", "album", "I keep the photographs in an album."],
+            ["alert", "सतर्क", "satark", "You should always be on the alert for anyone who looks suspicious."],
+            ["A level", "ए लेवल", "A level", "I did all right in my mock A levels."],
+            ["alias", "उपनाम", "upnam", "Claire Potter adopted the alias Margaret Smith."],
+            ["alibi", "उपस्थिति का प्रमाण", "upasthiti ka praman", "She was in the office all of Wednesday and so has a cast-iron alibi."],
+            ["alien", "विदेशी", "videshi", "During the war, he was imprisoned as an enemy alien."],
+            ["alienation", "विमुखीकरण", "vimukhikaran", "There is a growing feeling of alienation among young unemployed people."],
+            ["alight", "जलता हुआ", "jalta hua", "His clothing caught alight."],
+            ["align", "संरेखित करना", "sanrekhit karna", "This pillar is roughly aligned with the others."],
+            ["alignment", "संरेखण", "sanrekhan", "The door needs to be in alignment with the frame."],
+            ["alike", "समान", "saman", "The two towns are very much alike in size and population."],
+            ["alive", "जीवित", "jivit", "Lost and so far from other human life, he faced a desperate struggle to stay alive."],
+            ["allegation", "आरोप", "aarop", "The defendants in the libel case maintain that their allegations are true."],
+            ["allegiance", "निष्ठा", "nishtha", "We will give our full allegiance to the party."],
+            ["allergy", "एलर्जी", "allergy", "Hair and feathers can cause allergies."],
+            ["alleviate", "कम करना", "kam karna", "These problems have been greatly alleviated by the passing of the new Act."],
+            ["alley", "गली", "gali", "a maze of narrow alleys"],
+            ["alliance", "गठबंधन", "gathbandhan", "The organization is a broad alliance of many different groups."],
+            ["allocate", "आवंटित करना", "aavantit karna", "Local authorities have to learn to allocate resources efficiently."],
+            ["allocation", "आवंटन", "aavantan", "The allocation must be made according to a strict set of criteria."],
+            ["allowance", "भत्ता", "bhatta", "I get four weeks' holiday allowance a year."],
+            ["allusion", "संकेत", "sanket", "She was made uncomfortable by his veiled allusion to the previous night."],
+            ["ally", "सहयोगी", "sahyogi", "Charles remained a close ally of the French king."],
+            ["almond", "बादाम", "badam", "ground biscuits made with ground almonds"],
+            ["alone", "अकेला", "akela", "These islands are too small to stand alone as independent states."],
+            ["aloof", "अलग", "alag", "Some people find her aloof and unfriendly."],
+            ["alphabet", "वर्णमाला", "varnamala", "How many letters are there in the Greek alphabet?"],
+            ["altar", "वेदी", "vedi", "The bride approached the altar."],
+            ["alter", "बदलना", "badalna", "He had not altered greatly in the last ten years."],
+            ["alteration", "परिवर्तन", "parivartan", "There will be no alteration in corporation tax."],
+            ["alternative", "विकल्प", "vikalp", "We have two alternatives."],
+            ["altitude", "ऊँचाई", "oochhai", "The plane took off and climbed to cruising altitude."],
+            ["amateur", "शौकिया", "shaukiya", "The others had been skiing since they could walk and made her look a rank amateur."],
+            ["amaze", "आश्चर्यचकित करना", "aashcharyachakit karna", "His skill as a dancer really amazed me."],
+            ["amazed", "आश्चर्यचकित", "aashcharyachakit", "I was totally amazed by the brilliance of her paintings."],
+            ["amazement", "आश्चर्य", "aashcharya", "She raised her eyebrows in mock amazement."],
+            ["amazing", "आश्चर्यजनक", "aashcharyajanak", "He remembered our names from ten years ago—isn't that just amazing?"],
+            ["ambassador", "राजदूत", "rajadoot", "She's been appointed British ambassador to the UN."],
+            ["ambiguity", "द्व्यर्थता", "dvyarthata", "There is a degree of ambiguity in this statement."],
+            ["ambiguous", "अस्पष्ट", "aspasht", "The paragraph is rendered ambiguous by the writer's careless use of pronouns."],
+            ["ambition", "महत्वाकांक्षा", "mahatvakanksha", "She's a woman of driving ambition."],
+            ["ambitious", "महत्वाकांक्षी", "mahatvakankshi", "He is a highly ambitious politician."],
+            ["ambulance", "एम्बुलेंस", "ambulance", "Don't worry—the ambulance is on its way."],
+            ["ambush", "घात", "ghat", "The soldiers set up an ambush on the road."],
+            ["amenable", "सहमत", "sahmat", "The manager was most amenable: nothing was too much trouble."],
+            ["amendment", "संशोधन", "sanshodhan", "A major amendment was introduced into the legislation."],
+            ["amenity", "सुविधा", "suvidha", "The campsite is close to all local amenities."],
+            ["amiable", "सौम्य", "saumya", "a perfectly amiable young man"],
+            ["ammunition", "गोला-बारूद", "gola-barood", "They issued live ammunition to the troops."],
+            ["amnesty", "आम माफी", "aam maafi", "The government granted an amnesty to all political prisoners."],
+            ["amount", "राशि", "rashi", "a considerable amount of money"],
+            ["amuse", "मनोरंजन करना", "manoranjan karna", "Her discomfort amused him greatly."],
+            ["amused", "प्रसन्न", "prasann", "She looked faintly amused."],
+            ["amusement", "मनोरंजन", "manoranjan", "A glimmer of amusement showed in her eyes."],
+            ["amusing", "मनोरंजक", "manoranjak", "There is nothing even remotely amusing about the situation."],
+            ["anaesthetic", "निश्चेतक", "nishchetak", "He was given a general anaesthetic."],
+            ["analogous", "समान", "saman", "The two situations are roughly analogous."],
+            ["analogy", "सादृश्य", "sadrishya", "A close analogy with the art of singing can be made."],
+            ["analyse", "विश्लेषण करना", "vishleshan karna", "The results must be analysed in detail."],
+            ["analysis", "विश्लेषण", "vishleshan", "They carried out an in-depth analysis of the results."],
+            ["analyst", "विश्लेषक", "vishleshak", "He was a shrewd analyst of players' strengths and weaknesses."],
+            ["anarchy", "अराजकता", "arajakta", "The high number of strikes resulted in near anarchy."],
+            ["anatomy", "शरीर रचना", "sharir rachana", "studying human anatomy"],
+            ["ancestor", "पूर्वज", "purvaj", "The builder of the manor house is a direct ancestor of the present owner."],
+            ["ancestry", "वंश", "vansh", "The two species have developed from a common ancestry."],
+            ["anchor", "लंगर", "langar", "The ship cast anchor in the bay."],
+            ["ancient", "प्राचीन", "prachin", "The man looked positively ancient."],
+            ["anecdote", "किस्सा", "kissa", "She is good at telling anecdotes."],
+            ["angel", "देवदूत", "devdoot", "He liked to think of himself as an avenging angel fighting for justice."],
+            ["anger", "गुस्सा", "gussa", "He slammed the door in a fit of anger."],
+            ["angle", "कोण", "kon", "The plane started descending at a steep angle."],
+            ["angry", "गुस्सैल", "gussail", "That man makes me angry every time I see him."],
+            ["anguish", "यातना", "yatana", "The loss of a pet can cause some people real anguish."],
+            ["animal", "जानवर", "janvar", "Many people come to the resort simply to enjoy the fresh mountain air."],
+            ["animosity", "शत्रुता", "shatruta", "Despite everything, she bore her former boss no animosity."],
+            ["ankle", "टखना", "takhna", "She has long legs and slender ankles."],
+            ["annex", "अधिग्रहण करना", "adhigrahan karna", "The region was formally annexed in 1892."],
+            ["annihilation", "पूर्ण विनाश", "purn vinash", "They were to surrender immediately or face total annihilation."],
+            ["anniversary", "सालगिरह", "saalgirah", "They held celebrations to mark the anniversary of Mozart's death."],
+            ["announce", "घोषणा करना", "ghoshana karna", "The company proudly announced the launch of its new range of cars."],
+            ["announcement", "घोषणा", "ghoshana", "Baker issued his surprise announcement in Paris after two hours of talks."],
+            ["announcer", "घोषक", "ghoshak", "The station announcer warned us that the train was running late."],
+            ["annoy", "चिढ़ाना", "chidhana", "It really annoys me when people forget to say thank you."],
+            ["annoyance", "कष्ट", "kasht", "A look of deep annoyance crossed his face."],
+            ["annoyed", "नाराज़", "naraz", "I was a little annoyed about the whole thing."],
+            ["annoying", "कष्टप्रद", "kashtaprad", "Please stop making that noise—it's getting annoying."],
+            ["antagonism", "शत्रुता", "shatruta", "She felt nothing but antagonism towards her boss."],
+            ["antipathy", "घृणा", "ghrina", "I feel a profound antipathy to using any weapon."],
+            ["antique", "प्राचीन वस्तु", "prachin vastu", "He collects Egyptian and Roman antiquities."],
+            ["antiquity", "प्राचीन काल", "prachin kaal", "legends from Greek antiquity"],
+            ["antiseptic", "रोगाणुनाशक", "roganunashak", "Mint is a mild antiseptic."],
+            ["antithesis", "विरोधाभास", "virodhabhas", "The company represented the antithesis of everything he admired."],
+            ["anxiety", "चिंता", "chinta", "She felt a nagging anxiety that could not be relieved."],
+            ["anxious", "चिंतित", "chintit", "The bus was late and Sue began to get anxious."],
+            ["apartment", "अपार्टमेंट", "apartment", "We will be renting the apartment for a year."],
+            ["apathy", "उदासीनता", "udasinata", "Once defeated, he sank into apathy."],
+            ["apologetic", "क्षमायाचना", "kshamayachana", "Barney sounded almost apologetic."],
+            ["apologize", "माफी मांगना", "maafi mangna", "He apologized profusely for the damage he had caused."],
+            ["apology", "माफी", "maafi", "My profuse apologies."],
+            ["appalling", "भयंकर", "bhayankar", "They had to wait for hours in the most appalling weather."],
+            ["apparatus", "उपकरण", "upkaran", "a very sophisticated piece of laboratory apparatus"],
+            ["apparent", "स्पष्ट", "spasht", "It soon became apparent that the company was losing money."],
+            ["appeal", "अपील", "apeel", "She gazed at him in mute appeal."],
+            ["appear", "दिखाई देना", "dikhai dena", "A man suddenly appeared in the doorway."],
+            ["appearance", "उपस्थिति", "upasthiti", "Shaving off his beard changed his appearance dramatically."],
+            ["appendicitis", "अपेंडिसाइटिस", "appendicitis", "He was taken to hospital with a burst appendix."],
+            ["appendix", "परिशिष्ट", "parishisht", "Doctors had to take out his appendix."],
+            ["appetite", "भूख", "bhookh", "I have always had a small appetite."],
+            ["applaud", "ताली बजाना", "tali bajana", "The audience applauded loudly."],
+            ["applause", "तालियाँ", "taliyan", "The speech drew loud applause."],
+            ["apple", "सेब", "seb", "Add some sugar to the stewed apple—it's still a bit tart."],
+            ["appliance", "उपकरण", "upkaran", "Many household appliances are expensive to run."],
+            ["applicable", "लागू", "lagu", "The rules have now been made equally applicable to all members."],
+            ["applicant", "आवेदक", "avedak", "Grant payments will be made to suitable applicants."],
+            ["application", "आवेदन", "avedan", "I am pleased to tell you that your application has been successful."],
+            ["apply", "आवेदन करना", "avedan karna", "These principles apply equally in all cases."],
+            ["appoint", "नियुक्त करना", "niyukt karna", "Miss Green resigned her appointment as our regional representative."],
+            ["appointment", "नियुक्ति", "niyukti", "He failed to keep his appointment."],
+            ["appraisal", "मूल्यांकन", "mulyankan", "A detailed appraisal of the scheme will now be carried out."],
+            ["appreciate", "सराहना करना", "sarahana karna", "We do really appreciate your help."],
+            ["appreciation", "सराहना", "sarahana", "They have little appreciation of the arts."],
+            ["apprehension", "डर", "dar", "They were filled with apprehension as they approached the building."],
+            ["apprehensive", "चिंतित", "chintit", "The long delay had made me quite apprehensive."],
+            ["approach", "पहुँचना", "pahunchana", "The aircraft had to make a steep approach to the landing strip."],
+            ["appropriate", "उचित", "uchit", "It was thought appropriate to award her the prize."],
+            ["approval", "स्वीकृति", "svikriti", "The scheme did not meet unqualified approval."],
+            ["approve", "स्वीकृति देना", "svikriti dena", "I wholeheartedly approve of his actions."],
+            ["approximation", "सन्निकटन", "sannikatan", "This is the nearest approximation of cost that they can give us."],
+            ["April", "अप्रैल", "april", "Note at MONTH"],
+            ["aptitude", "अभिक्षमता", "abhikshamta", "He has a natural aptitude for this work."],
+            ["Arabic", "अरबी", "arabi", "Note at LANGUAGE"],
+            ["arbitrary", "मनमाना", "manmana", "The decision is to some extent arbitrary."],
+            ["arbitration", "मध्यस्थता", "madhyasthata", "Both sides have agreed that the arbitration will be binding."],
+            ["arc", "चाप", "chaap", "firing shells in a high arc over our heads"],
+            ["arch", "मेहराब", "mehrab", "This huge triumphal arch was erected at the beginning of this century."],
+            ["archaeologist", "पुरातत्वविद्", "puratatvavid", "thousands of years ago, unearthed by archaeologists"],
+            ["archaeology", "पुरातत्व", "puratatva", "Note at SUBJECT (for verbs and nouns)"],
+            ["archbishop", "महाधर्माध्यक्ष", "mahadharmadhyaksh", "He was enthroned as archbishop in Canterbury Cathedral in 1980."],
+            ["architect", "वास्तुकार", "vastukar", "The house was designed by architect Louis Kahn."],
+            ["architecture", "वास्तुकला", "vastukala", "a school/style of architecture"],
+            ["archive", "पुरालेख", "puralekh", "The programme is preserved in the BBC sound archives."],
+            ["area", "क्षेत्र", "kshetra", "She knows the local area very well."],
+            ["arena", "अखाड़ा", "akhada", "The rider has to halt the horse in the arena."],
+            ["argue", "तर्क करना", "tark karna", "They were arguing over who should have the car that day."],
+            ["argument", "तर्क", "tark", "I had a big argument with my mother this morning."],
+            ["arise", "उत्पन्न होना", "utpann hona", "Some learning difficulties arise from the way children are taught at school."],
+            ["aristocracy", "अभिजात वर्ग", "abhijat varg", "Note at RANK"],
+            ["arithmetic", "अंकगणित", "ankganit", "By the age of ten, the children can do simple arithmetic."],
+            ["arm", "बांह", "banh", "He used his good arm to support his weight."],
+            ["armaments", "हथियार", "hathiyar", "The enemy has enough heavy artillery to win the war."],
+            ["armchair", "आरामकुर्सी", "aaramkursi", "He eased himself into the big armchair."],
+            ["armed", "हथियारबंद", "hathiyarband", "The soldiers were all armed with automatic rifles."],
+            ["armistice", "युद्धविराम", "yuddhviram", "to sign an armistice with the Americans"],
+            ["armour", "कवच", "kavach", "The police should be protected by body armour."],
+            ["armoured", "कवचित", "kavachit", "a convoy of heavily armoured vehicles"],
+            ["arms", "हथियार", "hathiyar", "The right to bear arms is enshrined in the constitution."],
+            ["army", "सेना", "sena", "After leaving school Mike went into the army."],
+            ["aroma", "सुगंध", "sugandh", "As soon as I opened the front door I smelled the distinctive aroma of fresh coffee."],
+            ["arrange", "व्यवस्था करना", "vyavastha karna", "These things can be arranged with difficulty."],
+            ["arrangement", "व्यवस्था", "vyavastha", "Arrangements for the trip have now been completed."],
+            ["array", "विन्यास", "vinyas", "a dazzling array of talent"],
+            ["arrears", "बकाया", "bakaya", "They fell into arrears with their rent."],
+            ["arrest", "गिरफ्तारी", "giraftari", "He grabbed the intruder by the arm and said, 'I am making a citizen's arrest.'"],
+            ["arrival", "आगमन", "aagman", "The timely arrival of the cheque took away the need to borrow money."],
+            ["arrive", "पहुँचना", "pahunchana", "We should arrive shortly."],
+            ["arrogance", "अहंकार", "ahankar", "She had the arrogance to believe the law did not apply to her."],
+            ["arrow", "तीर", "teer", "The arrow hit its target."],
+            ["arson", "आगजनी", "aagjani", "attempted arson"],
+            ["art", "कला", "kala", "one of the greatest works of art ever produced"],
+            ["artery", "धमनी", "dhamni", "Too much fatty food will make your arteries more likely to clog up."],
+            ["arthritis", "गठिया", "gathiya", "It is unclear why some people develop arthritis."],
+            ["article", "लेख", "lekh", "A leading article in 'The Times' accused the minister of lying."],
+            ["articulate", "स्पष्ट रूप से कहना", "spasht roop se kahna", "She spoke slowly, articulating each word clearly."],
+            ["artificial", "कृत्रिम", "kritrim", "a patently artificial contrivance"],
+            ["artillery", "तोपखाना", "topkhana", "The soldiers of the artillery train had panicked."],
+            ["artist", "कलाकार", "kalakar", "He is a serious artist, and totally committed to his work."],
+            ["ascend", "चढ़ना", "chadhna", "The road ascends steeply from the harbour."],
+            ["ascent", "चढ़ाई", "chadhai", "The climbers made their ascent of the mountain without oxygen."],
+            ["ash", "राख", "aakh", "Ash from the volcano fell over a wide area."],
+            ["ashamed", "शर्मिंदा", "sharminda", "I've done nothing to be ashamed about."],
+            ["ask", "पूछना", "poochna", "'How do you feel?' she asked softly."],
+            ["asleep", "सोया हुआ", "soya hua", "The baby lay peacefully asleep in its pram."],
+            ["aspect", "पहलू", "pahlu", "Questions also cover much broader aspects of general health and fitness."],
+            ["aspiration", "आकांक्षा", "aakanksha", "He has high aspirations and wants to improve his qualifications."],
+            ["aspirin", "एस्पिरिन", "aspirin", "She took an aspirin and went to bed."],
+            ["assassin", "हत्यारा", "hatyara", "He was killed by a hired assassin."],
+            ["assassinate", "हत्या करना", "hatya karna", "He was executed in 1887 for plotting to assassinate the tsar."],
+            ["assassination", "हत्या", "hatya", "Three local leaders have been killed in political assassinations."],
+            ["assault", "हमला", "hamla", "Better street lighting has helped reduce the number of assaults against women."],
+            ["assemble", "इकट्ठा करना", "ikattha karna", "The French began to assemble an army."],
+            ["assembly", "सभा", "sabha", "Provincial assemblies meet once a year."],
+            ["assent", "सहमति", "sahmati", "The Education Act received the royal assent in 1944."],
+            ["assert", "दावा करना", "dava karna", "The report asserts confidently that the industry will grow."],
+            ["assertion", "दावा", "dava", "Your assertion is not supported by the facts."],
+            ["assess", "आकलन करना", "aakalan karna", "It is difficult to fully assess the damage."],
+            ["assessment", "मूल्यांकन", "mulyankan", "Examination is by continuous assessment."],
+            ["asset", "संपत्ति", "sampatti", "The teachers are the school's biggest asset."],
+            ["assign", "सौंपना", "soupna", "The photographer is on assignment in China at the moment."],
+            ["assignment", "कार्य", "karya", "Why did you take on this assignment if you're so busy?"],
+            ["assimilate", "आत्मसात करना", "aatsat karna", "Children assimilate new information very quickly."],
+            ["assist", "सहायता करना", "sahayata karna", "We have been greatly assisted by individuals and organizations."],
+            ["assistance", "सहायता", "sahayata", "People in the flooded areas are in need of direct assistance."],
+            ["assistant", "सहायक", "sahayak", "I'll ask my personal assistant to deal with this."],
+            ["associate", "सहयोगी", "sahyogi", "a close associate with whom he started a business"],
+            ["association", "संघ", "sangh", "The association meets four times a year."],
+            ["assortment", "विविधता", "vividhta", "She was wearing an odd assortment of clothes."],
+            ["assume", "मान लीजे", "man lijiye", "I automatically assumed that you knew about this."],
+            ["assumption", "पूर्वधारणा", "purvadharna", "Your argument is based on a set of questionable assumptions."],
+            ["assurance", "आश्वासन", "aashvasan", "He gave me his personal assurance that the vehicle was safe."],
+            ["assure", "आश्वस्त करना", "aashvast karna", "He hastened to assure us that the press would not be informed."],
+            ["assured", "आश्वस्त", "aashvast", "You can rest assured that your children are in good hands."],
+            ["asthma", "दमा", "dama", "Three people in the family suffer from asthma."],
+            ["Gain", "लाभ", "Gain", "You will gain knowledge from this."],
+            ["Gallery", "गैलरी", "Gailaree", "The art gallery was amazing."],
+            ["Game", "खेल", "Khel", "Let's play a game."],
+            ["Gap", "अंतर", "Antar", "There is a gap between the two buildings."],
+            ["Garage", "गैरेज", "Gairaj", "Park the car in the garage."],
+            ["Garden", "बगीचा", "Bageecha", "My mother loves her garden."],
+            ["Gas", "गैस", "Gais", "The car needs more gas."],
+            ["Gate", "दरवाज़ा", "Darwaza", "Close the gate when you leave."],
+            ["Gather", "इकट्ठा करना", "Ikattha karna", "Gather all the documents."],
+            ["Gender", "लिंग", "Ling", "Gender equality is important."],
+            ["General", "सामान्य", "Saamaanya", "This is a general rule."],
+            ["Generate", "उत्पन्न करना", "Utpann karna", "This machine generates electricity."],
+            ["Generation", "पीढ़ी", "Peedhi", "The new generation is tech-savvy."],
+            ["Generous", "उदार", "Udaar", "He is very generous."],
+            ["Genius", "प्रतिभा", "Pratibha", "Einstein was a genius."],
+            ["Gentle", "कोमल", "Komal", "Be gentle with the baby."],
+            ["Gentleman", "सज्जन", "Sajjan", "He is a true gentleman."],
+            ["Geography", "भूगोल", "Bhoogol", "Geography is my favorite subject."],
+            ["Gesture", "इशारा", "Ishaara", "He made a gesture of apology."],
+            ["Get", "पाना", "Paana", "I need to get some rest."],
+            ["Ghost", "भूत", "Bhoot", "The story was about a ghost."],
+            ["Giant", "विशाल", "Vishaal", "The giant tree was 100 years old."],
+            ["Gift", "उपहार", "Uphaar", "I received a gift on my birthday."],
+            ["Girl", "लड़की", "Ladki", "The girl is reading a book."],
+            ["Give", "देना", "Dena", "Give me your hand."],
+            ["Glad", "प्रसन्न", "Prasann", "I am glad to see you."],
+            ["Glance", "झलक", "Jhalak", "He took a glance at the watch."],
+            ["Glass", "कांच", "Kaanch", "Be careful with the glass."],
+            ["Global", "वैश्विक", "Vaishvik", "Global warming is a serious issue."],
+            ["Glove", "दस्ताना", "Dastaana", "Wear gloves in winter."],
+            ["Go", "जाना", "Jaana", "Let's go home."],
+            ["Goal", "लक्ष्य", "Lakshya", "My goal is to become a doctor."],
+            ["God", "भगवान", "Bhagwaan", "God bless you."],
+            ["Gold", "सोना", "Sona", "Gold is very expensive."],
+            ["Good", "अच्छा", "Achha", "Have a good day!"],
+            ["Goodbye", "अलविदा", "Alvida", "Goodbye, see you tomorrow."],
+            ["Goods", "सामान", "Saamaan", "The goods were delivered on time."],
+            ["Govern", "शासन करना", "Shaasan karna", "The president governs the country."],
+            ["Government", "सरकार", "Sarkaar", "The government announced new policies."],
+            ["Governor", "राज्यपाल", "Rajyapaal", "The governor visited our school."],
+            ["Grab", "पकड़ना", "Pakadna", "Grab the opportunity."],
+            ["Grade", "श्रेणी", "Shreni", "I got good grades this semester."],
+            ["Gradual", "धीरे-धीरे", "Dheere-dheere", "There was a gradual improvement."],
+            ["Graduate", "स्नातक", "Snaatak", "I will graduate next year."],
+            ["Grain", "अनाज", "Anaaj", "Wheat is a type of grain."],
+            ["Grammar", "व्याकरण", "Vyaakaran", "Grammar is important in writing."],
+            ["Grand", "भव्य", "Bhavya", "The wedding was a grand event."],
+            ["Grandfather", "दादा", "Daadaa", "My grandfather tells great stories."],
+            ["Grandmother", "दादी", "Daadi", "My grandmother cooks delicious food."],
+            ["Grant", "अनुदान", "Anudaan", "The government gave a grant."],
+            ["Grass", "घास", "Ghaas", "The grass is green."],
+            ["Grateful", "कृतज्ञ", "Kritagya", "I am grateful for your help."],
+            ["Grave", "गंभीर", "Gambheer", "This is a grave situation."],
+            ["Great", "महान", "Mahaan", "You did a great job."],
+            ["Green", "हरा", "Hara", "The leaves are green."],
+            ["Greet", "अभिवादन करना", "Abhivaadan karna", "Greet your elders."],
+            ["Grey", "भूरा", "Bhoora", "The sky is grey today."],
+            ["Grief", "दुःख", "Dukh", "She was in deep grief."],
+            ["Grocery", "किराने का सामान", "Kiraane ka saamaan", "I need to buy groceries."],
+            ["Ground", "जमीन", "Jameen", "The ball fell on the ground."],
+            ["Group", "समूह", "Samooh", "We work in a group."],
+            ["Grow", "बढ़ना", "Badhna", "Plants grow with water and sunlight."],
+            ["Growth", "विकास", "Vikaas", "The company showed good growth."],
+            ["Guarantee", "गारंटी", "Gaarantee", "This product comes with a guarantee."],
+            ["Guard", "रक्षक", "Rakshak", "The guard is at the gate."],
+            ["Guess", "अनुमान", "Anumaan", "Can you guess the answer?"],
+            ["Guest", "मेहमान", "Mehmaan", "We have guests for dinner."],
+            ["Guide", "मार्गदर्शक", "Maargdarshak", "The guide showed us around."],
+            ["Guilty", "दोषी", "Doshee", "He felt guilty for lying."],
+            ["Guitar", "गिटार", "Gitaar", "He plays the guitar well."],
+            ["Gun", "बंदूक", "Bandook", "The police officer carried a gun."],
+            ["Guy", "आदमी", "Aadmi", "That guy is my friend."],
+            ["Gym", "जिम", "Jim", "I go to the gym every day."],
+            // --- H Words ---
+            ["Habit", "आदत", "Aadat", "Reading is a good habit."],
+            ["Hair", "बाल", "Baal", "She has long hair."],
+            ["Half", "आधा", "Aadha", "Give me half of the cake."],
+            ["Hall", "हॉल", "Hall", "The wedding was in a big hall."],
+            ["Hand", "हाथ", "Haath", "Give me your hand."],
+            ["Handle", "संभालना", "Sambhaalna", "Handle this with care."],
+            ["Handsome", "सुंदर", "Sundar", "He is a handsome man."],
+            ["Hang", "लटकाना", "Latkaana", "Hang the picture on the wall."],
+            ["Happen", "होना", "Hona", "What happened yesterday?"],
+            ["Happy", "खुश", "Khush", "I am very happy today."],
+                    ["Hard", "कठिन", "Kathin", "This question is very hard."],
+            ["Hardly", "शायद ही", "Shaayad hee", "I hardly know him."],
+            ["Harm", "हानि", "Haani", "Smoking does harm to your health."],
+            ["Harmful", "हानिकारक", "Haani-kaarak", "This chemical is harmful."],
+            ["Harmony", "सामंजस्य", "Saamanjasya", "We live in harmony."],
+            ["Hat", "टोपी", "Topee", "Wear a hat in the sun."],
+            ["Hate", "नफरत", "Nafrat", "I hate lying."],
+            ["Have", "होना", "Hona", "I have a car."],
+            ["Head", "सिर", "Sir", "My head is hurting."],
+            ["Headache", "सिरदर्द", "Sirdard", "I have a severe headache."],
+            ["Headline", "शीर्षक", "Sheershak", "The headline caught my attention."],
+            ["Health", "स्वास्थ्य", "Svaasthya", "Health is wealth."],
+            ["Healthy", "स्वस्थ", "Svasth", "Eat healthy food."],
+            ["Hear", "सुनना", "Sunna", "Can you hear me?"],
+            ["Heart", "दिल", "Dil", "My heart is beating fast."],
+            ["Heat", "गर्मी", "Garmi", "The heat is unbearable."],
+            ["Heaven", "स्वर्ग", "Svarg", "This place is like heaven."],
+            ["Heavy", "भारी", "Bhaaree", "This box is very heavy."],
+            ["Height", "ऊंचाई", "Oonchaai", "What is your height?"],
+            ["Help", "मदद", "Madad", "Can you help me?"],
+            ["Helpful", "मददगार", "Madadgaar", "You have been very helpful."],
+            ["Hence", "इसलिए", "Isliye", "Hence, we decided to leave."],
+            ["Here", "यहाँ", "Yahaan", "Come here, please."],
+            ["Hero", "नायक", "Naayak", "He is a real hero."],
+            ["Hide", "छिपाना", "Chhipaana", "Hide and seek is a fun game."],
+            ["High", "ऊंचा", "Ooncha", "The mountain is very high."],
+            ["Highlight", "मुख्य बिंदु", "Mukhya bindu", "Let me highlight the main points."],
+            ["Highly", "अत्यधिक", "Atyadhik", "She is highly qualified."],
+            ["Highway", "राजमार्ग", "Rajmaarg", "The highway was busy."],
+            ["Hill", "पहाड़ी", "Pahaadee", "We climbed the hill."],
+            ["Hire", "किराए पर लेना", "Kiraaye par lena", "We need to hire more staff."],
+            ["History", "इतिहास", "Itihaas", "History is an interesting subject."],
+            ["Hit", "मारना", "Maarna", "The ball hit the window."],
+            ["Hold", "पकड़ना", "Pakadna", "Hold my hand."],
+            ["Hole", "छेद", "Ched", "There is a hole in my sock."],
+            ["Holiday", "छुट्टी", "Chhutti", "Sunday is a holiday."],
+            ["Holy", "पवित्र", "Pavitr", "The Ganges is a holy river."],
+            ["Home", "घर", "Ghar", "There is no place like home."],
+            ["Homework", "गृहकार्य", "Grihakaary", "Do your homework on time."],
+            ["Honest", "ईमानदार", "Eemaandaar", "He is an honest man."],
+            ["Honor", "सम्मान", "Samman", "It is an honor to meet you."],
+            ["Hope", "आशा", "Aasha", "Never lose hope."],
+            ["Horizon", "क्षितिज", "Kshitij", "The sun set below the horizon."],
+            ["Horror", "डरावना", "Daraavana", "I don't like horror movies."],
+            ["Horse", "घोड़ा", "Ghoda", "The horse ran fast."],
+            ["Hospital", "अस्पताल", "Aspataal", "I need to go to the hospital."],
+            ["Host", "मेज़बान", "Mezbaan", "He was the host of the party."],
+            ["Hot", "गर्म", "Garm", "The tea is very hot."],
+            ["Hotel", "होटल", "Hotel", "We stayed at a five-star hotel."],
+            ["Hour", "घंटा", "Ghanta", "I waited for an hour."],
+            ["House", "घर", "Ghar", "This is my dream house."],
+            ["Household", "घरेलू", "Gharel", "Household chores take time."],
+            ["How", "कैसे", "Kaise", "How are you?"],
+            ["However", "हालांकि", "Haalaanki", "However, I disagree."],
+            ["Huge", "विशाल", "Vishaal", "The elephant is huge."],
+            ["Human", "मानव", "Maannav", "Every human deserves respect."],
+            ["Humor", "हास्य", "Haasya", "His sense of humor is great."],
+            ["Hundred", "सौ", "Sau", "I have a hundred rupees."],
+            ["Hungry", "भूखा", "Bhookha", "I am very hungry."],
+            ["Hunt", "शिकार", "Shikaar", "It is illegal to hunt tigers."],
+            ["Hurry", "जल्दी", "Jaldi", "Hurry up, we are late."],
+            ["Hurt", "चोट", "Chot", "My leg hurts."],
+            ["Husband", "पति", "Pati", "My husband is a doctor."],
+            // --- I Words ---
+            ["Ice", "बफ", "आइस", "Put some ice in the drink."],
+            ["Idea", "वचार", "आइ डया", "I have a great idea."],
+            ["Ideal", "आदश", "आइ डयल", "She is an ideal student."],
+            ["Identify", "पहचानना", "आइडेि टफाई", "Can you identify this bird?"],
+            ["Identity", "पहचान", "आइडेि टट", "Show your identity card."],
+            ["Ignore", "नज़रअंदाज़ करना", "इनोर", "Don't ignore your health."],
+            ["Ill", "बीमार", "इल", "She is ill and resting."],
+            ["Illegal", "अवैध", "इलगल", "Drinking and driving is illegal."],
+            ["Illness", "बीमार", "इि नस", "Mental illness is serious."],
+            ["Image", "छ व", "इमेज", "The image is very clear."],
+            ["Imagine", "कपना करना", "इमैिजन", "Imagine a world without war."],
+            ["Immediate", "तकाल", "इमी डएट", "This needs immediate attention."],
+            ["Immediately", "तुरंत", "इमी डएटल", "Come here immediately."],
+            ["Immense", "वशाल", "इमे स", "The universe is immense."],
+            ["Immigrant", "वासी", "इ म ट", "He is an immigrant from Nepal."],
+            ["Impact", "भाव", "इपै ट", "The impact was huge."],
+            ["Implement", "लागू करना", "इि लमे ट", "We need to implement this plan."],
+            ["Imply", "संकेत देना", "इ लाय", "What do you imply by that?"],
+            ["Import", "आयात", "इपोट", "India imports oil."],
+            ["Important", "महवपूण", "इ पोटट", "This is very important."],
+            ["Impose", "लागू करना", "इ पोज़", "The government imposed new taxes."],
+            ["Impossible", "असंभव", "इ पॉ सबल", "Nothing is impossible."],
+            ["Impress", "भा वत करना", "इ ेस", "He tried to impress her."],
+            ["Improve", "सुधारना", "इ ूव", "Practice will improve your skills."],
+            ["Improvement", "सुधार", "इ ूवमे ट", "There has been an improvement."],
+            ["In", "म", "इन", "I live in Delhi."],
+            ["Incentive", "ोसाहन", "इसेि टव", "The company oAers good incentives."],
+            ["Incident", "घटना", "इिसडे ट", "The incident happened yesterday."],
+            ["Include", "शा मल करना", "इ लूड", "The price includes tax."],
+            ["Income", "आय", "इकम", "What is your monthly income?"],
+            ["Increase", "बढ़ाना", "इ ज़", "We need to increase production."],
+            ["Incredible", "अ ववसनीय", "इ े डबल", "The view was incredible."],
+            ["Indeed", "वा तव म", "इडीड", "Thank you very much indeed."],
+            ["Independence", "वतं ता", "इि डपे डे स", "India got independence in 1947."],
+            ["Independent", "वतं", "इि डपे डे ट", "She is an independent woman."],
+            ["Index", "सूचकांक", "इडे स", "Check the index of the book."],
+            ["Indicate", "संकेत देना", "इि डकेट", "The arrow indicates the direction."],
+            ["Individual", "यि त", "इि ड वजुअल", "Every individual is unique."],
+            ["Indoor", "घर के अंदर", "इडोर", "We played indoor games."],
+            ["Industry", "उयोग", "इड", "The IT industry is growing."],
+            ["Inevitable", "अनवाय", "इने वटेबल", "Change is inevitable."],
+            ["Infant", "शशु", "इफट", "The infant is sleeping."],
+            ["Infect", "सं मत करना", "इफे ट", "The virus can infect anyone."],
+            ["Infection", "सं मण", "इफे शन", "Wash hands to prevent infection."],
+            ["Infer", "नकष नकालना", "इफर", "What can we infer from this?"],
+            ["Influence", "भाव", "इ लुएस", "Parents influence their children."],
+            ["Inform", "सू चत करना", "इफॉम", "Please inform me when you arrive."],
+            ["Information", "जानकार", "इफमशन", "I need more information."],
+            ["Ingredient", "साम ी", "इ े डएट", "What are the ingredients?"],
+            ["Initial", "ारं भक", "इनशल", "My initial reaction was surprise."],
+            ["Initiative", "पहल", "इन शएटव", "She took the initiative."],
+            ["Injure", "चोट लगाना", "इजर", "Three people were injured."],
+            ["Injury", "चोट", "इजर", "He suAered a leg injury."],
+            ["Inner", "भीतर", "इनर", "The inner layer is soft."],
+            ["Innocent", "मासूम", "इनोसे ट", "The child is innocent."],
+            ["Innovation", "नवाचार", "इनोवेशन", "Innovation drives progress."],
+            ["Input", "इनपुट", "इनपुट", "Your input is valuable."],
+            ["Inquiry", "जांच", "इ वायर", "The police began an inquiry."],
+            ["Insect", "कड़ा", "इसे ट", "Butterfly is a beautiful insect."],
+            ["Insert", "डालना", "इसट", "Insert the key in the lock."],
+            ["Inside", "अंदर", "इसाइड", "Come inside, it's cold."],
+            ["Insight", "अंत ि ट", "इसाइट", "This gives us valuable insight."],
+            ["Insist", "जोर देना", "इि सट", "She insisted on coming."],
+            ["Inspect", "नर ण करना", "इ पे ट", "The oAicer came to inspect."],
+            ["Inspire", "े रत करना", "इ पायर", "His story inspired me."],
+            ["Install", "था पत करना", "इ टॉल", "Install the software."],
+            ["Instance", "उदाहरण", "इ टस", "For instance, take this case."],
+            ["Instant", "तुरंत", "इ टट", "I need an instant reply."],
+            ["Instead", "के बजाय", "इ टेड", "Take tea instead of coAee."],
+            ["Institute", "सं थान", "इि टयूट", "I study at a coaching institute."],
+            ["Institution", "सं था", "इि टयूशन", "This is a reputed institution."],
+            ["Instruct", "नदश देना", "इ ट", "The teacher instructed us."],
+            ["Instruction", "नदश", "इ शन", "Follow the instructions carefully."],
+            ["Instrument", "वा ययं", "इ मे ट", "Guitar is a musical instrument."],
+            ["Insurance", "बीमा", "इशुरे स", "I have health insurance."],
+            ["Intelligent", "बु धमान", "इटे लजे ट", "She is very intelligent."],
+            ["Intend", "इरादा", "इटे ड", "I intend to study abroad."],
+            ["Intense", "ती", "इटे स", "The heat was intense."],
+            ["Intention", "इरादा", "इटे शन", "It was not my intention."],
+            ["Interact", "बातचीत करना", "इटरै ट", "Children interact with each other."],
+            ["Interest", "च", "इटरे ट", "I have an interest in music."],
+            ["Interesting", "दलचप", "इटरेि टंग", "This is an interesting book."],
+            ["Internal", "आंतरक", "इटनल", "The internal structure is complex."],
+            ["International", "अंतरा य", "इटनशनल", "This is an international event."],
+            ["Internet", "इंटरनेट", "इटनट", "I use the internet daily."],
+            ["Interpret", "या या करना", "इटर ेट", "How do you interpret this?"],
+            ["Interrupt", "बीच म बोलना", "इटरट", "Don't interrupt while I am speaking."],
+            ["Interval", "अंतराल", "इटवल", "There was a 15-minute interval."],
+            ["Interview", "सा ाकार", "इटरयू", "I have a job interview tomorrow."],
+            ["Introduce", "परचय कराना", "इ यूस", "Let me introduce myself."],
+            ["Introduction", "परचय", "इ डशन", "Read the introduction first."],
+            ["Invade", "आमण करना", "इवेड", "The army will invade at dawn."],
+            ["Invent", "आ वकार करना", "इवे ट", "Edison invented the light bulb."],
+            ["Invest", "नवेश करना", "इवे ट", "Invest your money wisely."],
+            ["Investigate", "जांच करना", "इवेि टगेट", "The police will investigate."],
+            ["Investment", "नवेश", "इवे टमे ट", "Real estate is a good investment."],
+            ["Invite", "आमं त करना", "इवाइट", "I invite you to my party."],
+            ["Involve", "शा मल करना", "इवॉ व", "This task involves hard work."],
+            ["Iron", "लोहा", "आयन", "Iron is a useful metal."],
+            ["Island", "वीप", "आइलड", "Andaman is a beautiful island."],
+            ["Isolate", "अलग करना", "आइसोलेट", "Isolate the infected patient."],
+            ["Issue", "मु दा", "इयू", "This is a serious issue."],
+            ["Item", "वतु", "आइटम", "What is the next item on the list?"],
+            ["Its", "इसका", "इस", "The dog wagged its tail."],
+            ["Itself", "खुद", "इटसे फ", "The machine operates itself."],
+            // --- J Words ---
+            ["Jacket", "जैकेट", "जै कट", "Wear a warm jacket."],
+            ["Jail", "जेल", "जेल", "He was sent to jail."],
+            ["January", "जनवर", "जैनुअर", "New Year is in January."],
+            ["Jealous", "ईयालु", "जैलस", "Don't be jealous of others."],
+            ["Jewel", "जवाहरात", "जूल", "She wore beautiful jewels."],
+            ["Job", "नौकर", "जॉब", "I am looking for a job."],
+            ["Join", "शा मल होना", "जॉइन", "Join us for dinner."],
+            ["Joint", "संयु त", "जॉइट", "This is a joint venture."],
+            ["Joke", "मज़ाक", "जोक", "He told a funny joke."],
+            ["Journey", "या ा", "जन", "Life is a journey."],
+            ["Joy", "खुशी", "जॉय", "The birth of a child brings joy."],
+            ["Judge", "यायाधीश", "जज", "The judge gave the verdict."],
+            ["Judgment", "नणय", "जजमे ट", "Use your own judgment."],
+            ["Juice", "रस", "जूस", "I drink orange juice daily."],
+            ["July", "जुलाई", "जुलाई", "My birthday is in July."],
+            ["Jump", "कूदना", "जप", "The cat can jump high."],
+            ["June", "जून", "जून", "School starts in June."],
+            ["Jungle", "जंगल", "जंगल", "The lion lives in the jungle."],
+            ["Junior", "जूनयर", "जूनयर", "He is my junior at work."],
+            ["Jury", "जूर", "जूर", "The jury reached a verdict."],
+            ["Just", "बस", "जट", "I just arrived."],
+            ["Justice", "याय", "जि टस", "Justice must be served."],
+            ["Justify", "सह ठहराना", "जि टफाई", "Can you justify your actions?"],
+            // --- K Words ---
+            ["Keen", "उसुक", "कन", "He is keen to learn."],
+            ["Keep", "रखना", "कप", "Keep the change."],
+            ["Key", "चाबी", "क", "Where is the key?"],
+            ["Keyboard", "कबोड", "कबोड", "Type on the keyboard."],
+            ["Kick", "लात", "कक", "He kicked the ball."],
+            ["Kid", "बचा", "कड", "The kid is very smart."],
+            ["Kill", "मारना", "कल", "Smoking can kill you."],
+            ["Kilo", "कलो", "कलो", "I bought one kilo of rice."],
+            ["Kind", "दयालु", "काइड", "She is very kind."],
+            ["King", "राजा", "कंग", "The king ruled the kingdom."],
+            ["Kingdom", "रा य", "कंगडम", "The United Kingdom is in Europe."],
+            ["Kiss", "चु ंबन", "कस", "She kissed her mother goodbye."],
+            ["Kitchen", "रसोई", "कचन", "My mother is in the kitchen."],
+            ["Kite", "पतंग", "काइट", "I love flying kites."],
+            ["Knee", "घुटना", "नी", "I fell and hurt my knee."],
+            ["Knife", "चाकू", "नाइफ", "Be careful with the knife."],
+            ["Knock", "दतक", "नॉक", "Someone is knocking at the door."],
+            ["Know", "जानना", "नो", "I know the answer."],
+            ["Knowledge", "ान", "नॉलेज", "Knowledge is power."],
+            ["Known", "जाना हुआ", "नोन", "He is known for his honesty."],
+            // --- L Words ---
+            ["Lab", "योगशाला", "लैब", "We did an experiment in the lab."],
+            ["Labor", "म", "लेबर", "Manual labor is hard work."],
+            ["Lack", "कमी", "लैक", "There is a lack of water."],
+            ["Ladder", "सीढ़", "लैडर", "Use the ladder to reach the roof."],
+            ["Lady", "महला", "लेडी", "That lady is my teacher."],
+            ["Lake", "झील", "लेक", "The lake is very beautiful."],
+            ["Lamb", "मेमना", "लै ब", "The lamb followed its mother."],
+            ["Lamp", "लप", "लै प", "Turn on the lamp."],
+            ["Land", "भू म", "लै ड", "The plane will land soon."],
+            ["Language", "भाषा", "लवेज", "English is a global language."],
+            ["Large", "बड़ा", "लाज", "India is a large country."],
+            ["Last", "अंतम", "ला ट", "This is the last chance."],
+            ["Late", "देर", "लेट", "Sorry, I am late."],
+            ["Lately", "हाल ह म", "लेटल", "I haven't seen him lately."],
+            ["Later", "बाद म", "लेटर", "I will call you later."],
+            ["Latest", "नवीनतम", "लेटे ट", "What is the latest news?"],
+            ["Laugh", "हंसना", "लाफ", "Don't laugh at others."],
+            ["Law", "कानून", "लॉ", "We must follow the law."],
+            ["Lawyer", "वकल", "लॉयर", "My father is a lawyer."],
+            ["Lay", "रखना", "ले", "Lay the book on the table."],
+            ["Lazy", "आलसी", "लेज़ी", "Don't be lazy, start working."],
+            ["Lead", "नेतृ व", "लड", "She will lead the team."],
+            ["Leader", "नेता", "लडर", "Gandhi was a great leader."],
+            ["Leaf", "प ा", "लफ", "The leaf fell from the tree."],
+            ["League", "लग", "लग", "He plays in the cricket league."],
+            ["Learn", "सीखना", "लन", "I want to learn Spanish."],
+            ["Least", "कम से कम", "ल ट", "At least try once."],
+            ["Leave", "छोड़ना", "लव", "I will leave at 5 PM."],
+            ["Left", "बायां", "ले ट", "Turn left at the signal."],
+            ["Leg", "टांग", "लेग", "I hurt my leg."],
+            ["Legal", "कानूनी", "लगल", "This is a legal document."],
+            ["Legend", "कंवदंती", "लेजड", "He is a living legend."],
+            ["Legislation", "वधान", "लेिजलेशन", "New legislation was passed."],
+            ["Leisure", "अवकाश", "लेज़र", "I read books in my leisure time."],
+            ["Lemon", "नींबू", "लेमन", "Add lemon to the tea."],
+            ["Lend", "उधार देना", "लै ड", "Can you lend me some money?"],
+            ["Length", "लंबाई", "लै थ", "What is the length of the room?"],
+            ["Less", "कम", "लेस", "I need less sugar."],
+            ["Lesson", "पाठ", "लेसन", "I learned a valuable lesson."],
+            ["Let", "देना", "लेट", "Let me help you."],
+            ["Letter", "प", "लेटर", "I received a letter from my friend."],
+            ["Level", "तर", "लेवल", "The water level is rising."],
+            ["Library", "पु तकालय", "लाइ ेर", "I study in the library."],
+            ["License", "लाइसस", "लाइसे स", "Do you have a driving license?"],
+            ["Lie", "झूठ", "लाइ", "Don't tell a lie."],
+            ["Life", "जीवन", "लाइफ", "Life is beautiful."],
+            ["Lift", "उठाना", "लट", "Can you lift this box?"],
+            ["Light", "रोशनी", "लाइट", "Turn on the light."],
+            ["Like", "पसंद", "लाइक", "I like chocolate."],
+            ["Likely", "संभवतः", "लाइकल", "It will likely rain today."],
+            ["Limit", "सीमा", "ल मट", "There is a speed limit."],
+            ["Line", "रेखा", "लाइन", "Stand in a line."],
+            ["Link", "कड़ी", "लंक", "Click on the link."],
+            ["Lion", "शेर", "लायन", "The lion is the king of the jungle."],
+            ["Lip", "हठ", "लप", "She applied lipstick on her lips."],
+            ["Liquid", "तरल", "लि वड", "Water is a liquid."],
+            ["List", "सूची", "लट", "Make a list of items."],
+            ["Listen", "सुनना", "लसन", "Listen to the teacher."],
+            ["Literature", "साहय", "लटरेचर", "I love reading literature."],
+            ["Little", "थोड़ा", "लटल", "I have a little money."],
+            ["Live", "रहना", "लव", "I live in Mumbai."],
+            ["Lively", "जीवंत", "लाइवल", "The party was very lively."],
+            ["Living", "जी वत", "ल वंग", "The living room is spacious."],
+            ["Load", "भार", "लोड", "The truck is carrying a heavy load."],
+            ["Local", "थानीय", "लोकल", "I prefer local food."],
+            ["Location", "थान", "लोकेशन", "What is your current location?"],
+            ["Lock", "ताला", "लॉक", "Lock the door before leaving."],
+            ["Logic", "तक", "लॉिजक", "Use logic to solve this."],
+            ["Logical", "ता कक", "लॉिजकल", "That is a logical explanation."],
+            ["Lonely", "अकेला", "लोनल", "I feel lonely sometimes."],
+            ["Long", "लंबा", "लॉ ग", "The river is very long."],
+            ["Look", "देखना", "लुक", "Look at the blackboard."],
+            ["Loose", "ढला", "लूस", "This screw is loose."],
+            ["Lose", "खोना", "लूज़", "Don't lose hope."],
+            ["Loss", "हान", "लॉस", "The company suAered a huge loss."],
+            ["Lot", "बहुत", "लॉट", "I have a lot of work."],
+            ["Loud", "जोरदार", "लाउड", "The music is too loud."],
+            ["Love", "यार", "लव", "I love my family."],
+            ["Lovely", "सु ंदर", "लवल", "You look lovely today."],
+            ["Low", "कम", "लो", "The price is very low."],
+            ["Luck", "भाय", "लक", "Good luck with your exam!"],
+            ["Lucky", "भायशाल", "लक", "You are very lucky."],
+            ["Lunch", "दोपहर का खाना", "लंच", "What is for lunch?"],
+            ["Lung", "फेफड़ा", "लंग", "Smoking damages the lungs."],
+            // --- M Words ---
+            ["Machine", "मशीन", "मशीन", "The machine is not working."],
+            ["Mad", "पागल", "मैड", "Are you mad?"],
+            ["Magazine", "प का", "मैगज़ीन", "I read a fashion magazine."],
+            ["Magic", "जादू", "मैिजक", "The magician performed magic."],
+            ["Magnet", "चु ंबक", "मै नेट", "A magnet attracts iron."],
+            ["Magnificent", "भय", "मैिन फसे ट", "The palace was magnificent."],
+            ["Main", "मु य", "मेन", "What is the main reason?"],
+            ["Maintain", "बनाए रखना", "मे टेन", "Maintain your car regularly."],
+            ["Major", "मुख", "मेजर", "This is a major problem."],
+            ["Majority", "बहुमत", "मजॉरट", "The majority voted in favor."],
+            ["Make", "बनाना", "मेक", "I will make dinner."],
+            ["Male", "पु ष", "मेल", "The male lion has a mane."],
+            ["Man", "आदमी", "मैन", "That man is my uncle."],
+            ["Manage", "बंधन करना", "मैनेज", "Can you manage this task?"],
+            ["Management", "बंधन", "मैनेजमे ट", "Good management is essential."],
+            ["Manager", "बंधक", "मैनेजर", "The manager called a meeting."],
+            ["Manner", "ढंग", "मैनर", "Behave in a good manner."],
+            ["Manufacture", "नमाण", "मै युफै चर", "This company manufactures cars."],
+            ["Many", "कई", "मेनी", "Many people came to the party."],
+            ["Map", "नशा", "मैप", "Show me the map."],
+            ["March", "माच", "माच", "Holi is in March."],
+            ["Mark", "नशान", "माक", "Put a mark here."],
+            ["Market", "बाज़ार", "माकट", "I went to the market."],
+            ["Marriage", "ववाह", "मै रज", "Their marriage was beautiful."],
+            ["Married", "ववाहत", "मै रड", "Are you married?"],
+            ["Marry", "ववाह करना", "मैर", "They will marry next month."],
+            ["Mass", "सामू हक", "मैस", "A mass of people gathered."],
+            ["Massive", "वशाल", "मै सव", "The building is massive."],
+            ["Master", "मा लक", "मा टर", "He is a master of his craft."],
+            ["Match", "मैच", "मैच", "We won the cricket match."],
+            ["Material", "साम ी", "मट रयल", "What material is this made of?"],
+            ["Mathematics", "ग णत", "मैथमै टस", "Mathematics is my favorite subject."],
+            ["Matter", "मामला", "मैटर", "What's the matter?"],
+            ["Maximum", "अ धकतम", "मैि समम", "The maximum speed is 100 km/h."],
+            ["May", "मई", "मे", "May I come in?"],
+            ["Maybe", "शायद", "मेबी", "Maybe I will come tomorrow."],
+            ["Meal", "भोजन", "मील", "Dinner is the main meal."],
+            ["Mean", "मतलब", "मीन", "What do you mean?"],
+            ["Meaning", "अथ", "मीनंग", "What is the meaning of this word?"],
+            ["Meanwhile", "इस बीच", "मीनवाइल", "Meanwhile, I will prepare tea."],
+            ["Measure", "माप", "मेजर", "Measure the length of the room."],
+            ["Meat", "मांस", "मीट", "I don't eat meat."],
+            ["Mechanic", "मैके नक", "मकै नक", "The mechanic fixed my car."],
+            ["Media", "मी डया", "मी डया", "The media reported the news."],
+            ["Medical", "च कसा", "मे डकल", "I need medical help."],
+            ["Medicine", "दवा", "मे ड सन", "Take this medicine twice a day."],
+            ["Medium", "मयम", "मी डयम", "I ordered a medium pizza."],
+            ["Meet", "मलना", "मीट", "Nice to meet you."],
+            ["Meeting", "बैठक", "मीटंग", "The meeting starts at 10 AM."],
+            ["Member", "सदय", "मे बर", "I am a member of this club."],
+            ["Memory", "याद", "मेमर", "I have good memory."],
+            ["Mental", "मान सक", "मे टल", "Mental health is important."],
+            ["Mention", "उलेख", "मे शन", "Don't mention it."],
+            ["Menu", "मे यू", "मे यू", "Can I see the menu?"],
+            ["Message", "संदेश", "मैसेज", "I got your message."],
+            ["Metal", "धातु", "मेटल", "Iron is a strong metal."],
+            ["Method", "तरका", "मेथड", "What is the best method?"],
+            ["Meter", "मीटर", "मीटर", "The meter is running."],
+            ["Middle", "बीच", "मडल", "Stand in the middle."],
+            ["Midnight", "आधी रात", "मडनाइट", "I woke up at midnight."],
+            ["Might", "शायद", "माइट", "It might rain today."],
+            ["Mild", "हका", "माइ ड", "The weather is mild today."],
+            ["Mile", "मील", "माइल", "The station is two miles away."],
+            ["Military", "सै य", "म लटर", "He serves in the military."],
+            ["Milk", "दूध", "मक", "Drink milk for strong bones."],
+            ["Million", "दस लाख", "म लयन", "The population is over a million."],
+            ["Mind", "मन", "माइड", "Keep an open mind."],
+            ["Mine", "मेरा", "माइन", "This book is mine."],
+            ["Mineral", "खनज", "मनरल", "Water contains minerals."],
+            ["Minimum", "यूनतम", "मनमम", "The minimum age is 18."],
+            ["Minister", "मं ी", "मनटर", "The minister gave a speech."],
+            ["Minor", "छोटा", "माइनर", "It is a minor issue."],
+            ["Minority", "अपसं यक", "माइनॉरट", "Minorities have special rights."],
+            ["Minute", "मनट", "मनट", "Wait a minute, please."],
+            ["Mirror", "आईना", "मरर", "Look in the mirror."],
+            ["Miss", "याद करना", "मस", "I miss my family."],
+            ["Mission", "मशन", "मशन", "Our mission is to help others."],
+            ["Mistake", "गलती", "मटेक", "Everyone makes mistakes."],
+            ["Mix", "मलाना", "मस", "Mix the ingredients well."],
+            ["Mixture", "मण", "मसचर", "This is a mixture of colors."],
+            ["Mobile", "मोबाइल", "मोबाइल", "I lost my mobile phone."],
+            ["Model", "नमूना", "मॉडल", "She is a fashion model."],
+            ["Modern", "आधुनक", "मॉडन", "We live in a modern world."],
+            ["Moment", "ण", "मोमे ट", "Wait a moment."],
+            ["Money", "पैसा", "मनी", "Money can't buy happiness."],
+            ["Monitor", "नगरानी", "मॉनटर", "Monitor the patient's condition."],
+            ["Month", "महना", "मथ", "January is the first month."],
+            ["Mood", "मजाज", "मूड", "I am in a good mood."],
+            ["Moon", "चाँद", "मून", "The moon is bright tonight."],
+            ["Moral", "नैतक", "मॉरल", "The moral of the story is honesty."],
+            ["More", "अ धक", "मोर", "I need more time."],
+            ["Morning", "सुबह", "मॉनग", "I wake up early in the morning."],
+            ["Most", "अ धकांश", "मो ट", "Most people like music."],
+            ["Mother", "माँ", "मदर", "My mother is a homemaker."],
+            ["Motion", "गत", "मोशन", "The motion of the earth."],
+            ["Motor", "मोटर", "मोटर", "The motor is not working."],
+            ["Mountain", "पहाड़", "माउटेन", "The Himalayas are high mountains."],
+            ["Mouse", "चूहा", "माउस", "I saw a mouse in the kitchen."],
+            ["Mouth", "मु ँह", "माउथ", "Open your mouth."],
+            ["Move", "हलना", "मूव", "Don't move from here."],
+            ["Movement", "आंदोलन", "मूवमे ट", "The movement was peaceful."],
+            ["Movie", "फम", "मूवी", "Let's watch a movie."],
+            ["Much", "बहुत", "मच", "Thank you very much."],
+            ["Mud", "कचड़", "मड", "My shoes are covered in mud."],
+            ["Multiply", "गुणा करना", "मि टलाय", "Multiply 5 by 3."],
+            ["Murder", "हया", "मडर", "The murder was solved by police."],
+            ["Muscle", "पेशी", "मसल", "Exercise builds muscle."],
+            ["Museum", "सं हालय", "यूिज़यम", "The museum has ancient artifacts."],
+            ["Music", "संगीत", "यूिज़क", "I love listening to music."],
+            ["Musical", "संगीतमय", "यूिज़कल", "The musical event was great."],
+            ["Musician", "संगीतकार", "यूिज़शन", "He is a talented musician."],
+            ["Must", "अवय", "मट", "You must study hard."],
+            ["Mutual", "आपसी", "यूचुअल", "We have mutual respect."],
+            ["My", "मेरा", "माय", "This is my book."],
+            ["Myself", "खुद", "माइसे फ", "I did it myself."],
+            ["Mystery", "रहय", "मटर", "The mystery was finally solved."],
+            ["Myth", "पौरा णक कथा", "मथ", "Greek myths are interesting."],
+            // --- N Words ---
+            ["Nail", "नाखून", "नेल", "Cut your nails."],
+            ["Name", "नाम", "नेम", "What is your name?"],
+            ["Narrow", "संकण", "नैरो", "The road is very narrow."],
+            ["Nation", "रा", "नेशन", "India is a great nation."],
+            ["National", "रा य", "नैशनल", "Today is a national holiday."],
+            ["Native", "देशी", "ने टव", "Hindi is my native language."],
+            ["Natural", "ाकृ तक", "नैचरल", "This is a natural product."],
+            ["Nature", "कृ त", "नेचर", "Nature is beautiful."],
+            ["Naval", "नौसैनक", "नैवल", "He serves in the naval forces."],
+            ["Near", "पास", "नयर", "The shop is near my house."],
+            ["Nearby", "आस-पास", "नयरबाय", "There is a park nearby."],
+            ["Nearly", "लगभग", "नयल", "I nearly fell down."],
+            ["Neat", "साफ", "नीट", "Your room is very neat."],
+            ["Necessary", "आवयक", "नेसेसर", "Water is necessary for life."],
+            ["Neck", "गदन", "नेक", "My neck is hurting."],
+            ["Need", "ज़ रत", "नीड", "I need your help."],
+            ["Needle", "सुई", "नीडल", "Thread the needle carefully."],
+            ["Negative", "नकारामक", "नैगे टव", "Don't be negative."],
+            ["Neglect", "अनदेखा करना", "नले ट", "Don't neglect your health."],
+            ["Negotiate", "बातचीत करना", "नगो शएट", "We need to negotiate the price."],
+            ["Neighbor", "पड़ोसी", "नेबर", "My neighbor is very kind."],
+            ["Neither", "न तो", "नीदर", "Neither of them came."],
+            ["Nerve", "नस", "नव", "He has a lot of nerve."],
+            ["Nervous", "घबराया हुआ", "नवस", "I am nervous about the exam."],
+            ["Net", "जाल", "नेट", "The fisherman cast his net."],
+            ["Network", "नेटवक", "नेटवक", "The network is down."],
+            ["Neutral", "तटथ", "यू ल", "Switzerland is a neutral country."],
+            ["Never", "कभी नहं", "नैवर", "I never give up."],
+            ["Nevertheless", "फर भी", "नैवदलेस", "Nevertheless, we continued."],
+            ["New", "नया", "यू", "I bought a new phone."],
+            ["News", "समाचार", "यूज़", "I watch the news daily."],
+            ["Newspaper", "अखबार", "यूज़पेपर", "I read the newspaper every morning."],
+            ["Next", "अगला", "ने ट", "What is the next step?"],
+            ["Nice", "अछा", "नाइस", "You look nice today."],
+            ["Night", "रात", "नाइट", "I sleep at night."],
+            ["Nine", "नौ", "नाइन", "Nine is my lucky number."],
+            ["No", "नहं", "नो", "No, I don't agree."],
+            ["Noble", "उदा", "नोबल", "He is a noble man."],
+            ["Nobody", "कोई नहं", "नोबॉडी", "Nobody knows the answer."],
+            ["Nod", "सर हलाना", "नॉड", "He nodded in agreement."],
+            ["Noise", "शोर", "नॉइज़", "Please don't make noise."],
+            ["Noisy", "शोर करने वाला", "नॉइज़ी", "The street is very noisy."],
+            ["None", "कोई नहं", "नन", "None of them passed."],
+            ["Nonsense", "बकवास", "नॉ से स", "Don't talk nonsense."],
+            ["Noon", "दोपहर", "नून", "Let's meet at noon."],
+            ["Nor", "न ह", "नॉर", "Neither rich nor poor."],
+            ["Normal", "सामा य", "नॉमल", "Everything is back to normal."],
+            ["Normally", "सामा यतः", "नॉमल", "Normally, I wake up at 6."],
+            ["North", "उ र", "नॉथ", "Delhi is in the north of India."],
+            ["Northern", "उ र", "नॉदन", "Northern India is very cold."],
+            ["Nose", "नाक", "नोज़", "She has a small nose."],
+            ["Not", "नहं", "नॉट", "I am not ready."],
+            ["Note", "टपणी", "नोट", "Take notes in class."],
+            ["Nothing", "कुछ नहं", "न थंग", "There is nothing to worry about."],
+            ["Notice", "सूचना", "नोटस", "Did you notice anything?"],
+            ["Notion", "धारणा", "नोशन", "I have no notion of what he means."],
+            ["Novel", "उपयास", "नॉवल", "I am reading an interesting novel."],
+            ["November", "नवंबर", "नोवे बर", "Diwali is in November."],
+            ["Now", "अब", "नाउ", "I am busy right now."],
+            ["Nowadays", "आजकल", "नाउअडेज़", "Nowadays, everyone uses smartphones."],
+            ["Nowhere", "कहं नहं", "नोवेयर", "I could find it nowhere."],
+            ["Nuclear", "ना भकय", "यूि लयर", "Nuclear energy is powerful."],
+            ["Number", "सं या", "नबर", "What is your phone number?"],
+            ["Numerous", "अनेक", "यूमरस", "There are numerous reasons."],
+            ["Nurse", "नस", "नस", "The nurse took care of the patient."],
+            ["Nut", "नट", "नट", "This nut is hard to crack."],
+            // --- O Words ---
+            ["Obey", "आ ा मानना", "ओबे", "Obey your parents."],
+            ["Object", "वतु", "ऑजे ट", "What is that object?"],
+            ["Objective", "उ दे य", "ऑजेि टव", "Our objective is clear."],
+            ["Obligation", "दायव", "ऑिलगेशन", "It is my obligation to help."],
+            ["Observation", "अवलोकन", "ऑज़वशन", "His observation was correct."],
+            ["Observe", "अवलोकन करना", "ऑज़व", "Observe the rules."],
+            ["Obtain", "ात करना", "ऑटेन", "I obtained permission."],
+            ["Obvious", "पट", "ऑिवयस", "It is obvious that he is lying."],
+            ["Occasion", "अवसर", "अकेज़न", "This is a special occasion."],
+            ["Occupy", "कज़ा करना", "ऑयुपाय", "The army occupied the area."],
+            ["Occur", "होना", "अकर", "When did this occur?"],
+            ["Ocean", "महासागर", "ओशन", "The Pacific is the largest ocean."],
+            ["October", "अटूबर", "अटोबर", "Gandhi Jayanti is in October."],
+            ["Odd", "अजीब", "ऑड", "That's an odd thing to say."],
+            ["Of", "का", "ऑव", "A cup of tea."],
+            ["OA", "बंद", "ऑफ", "Turn oA the lights."],
+            ["OAend", "अपमानत करना", "अफे ड", "I didn't mean to oAend you."],
+            ["OAer", "ताव", "ऑफर", "Thank you for your oAer."],
+            ["OAice", "कायालय", "ऑ फस", "I work in a government oAice."],
+            ["OAicer", "अ धकार", "ऑ फसर", "The police oAicer helped us."],
+            ["OAicial", "आ धकारक", "अ फशल", "This is an oAicial document."],
+            ["Often", "असर", "ऑफन", "I often visit my grandmother."],
+            ["Oil", "तेल", "ऑयल", "Cook with less oil."],
+            ["Old", "पुराना", "ओड", "This is an old building."],
+            ["Olympic", "ओलं पक", "ऑ लि पक", "The Olympic Games are held every four years."],
+            ["On", "पर", "ऑन", "The book is on the table."],
+            ["Once", "एक बार", "वस", "I have been there once."],
+            ["One", "एक", "वन", "I have one brother."],
+            ["Only", "केवल", "ओल", "I have only five minutes."],
+            ["Onto", "पर", "ऑटू", "Jump onto the stage."],
+            ["Open", "खोलना", "ओपन", "Open the door, please."],
+            ["Operate", "चलाना", "ऑपरेट", "The doctor will operate tomorrow."],
+            ["Operation", "ऑपरेशन", "ऑपरेशन", "The operation was successful."],
+            ["Opinion", "राय", "अ पनयन", "In my opinion, you are right."],
+            ["Opponent", "तवं वी", "अपोनट", "He defeated his opponent."],
+            ["Opportunity", "अवसर", "ऑपचुनट", "This is a great opportunity."],
+            ["Oppose", "वरोध करना", "अपोज़", "I oppose this decision."],
+            ["Opposite", "वपरत", "ऑपिज़ट", "The bank is opposite the school."],
+            ["Optimistic", "आशावाद", "ऑिट मि टक", "Be optimistic about the future."],
+            ["Option", "वकप", "ऑशन", "Do we have another option?"],
+            ["Or", "या", "ऑर", "Tea or coAee?"],
+            ["Orange", "नारंगी", "ऑरज", "I love orange juice."],
+            ["Order", "आदेश", "ऑडर", "Place your order now."],
+            ["Ordinary", "साधारण", "ऑ डनर", "It was an ordinary day."],
+            ["Organ", "अंग", "ऑगन", "The heart is a vital organ."],
+            ["Organic", "जै वक", "ऑगनक", "I prefer organic food."],
+            ["Organization", "संगठन", "ऑगनाइज़ेशन", "She works for a big organization."],
+            ["Organize", "यवि थत करना", "ऑगनाइज़", "We need to organize the event."],
+            ["Origin", "उप", "ऑरिजन", "What is the origin of this word?"],
+            ["Original", "मूल", "अरिजनल", "This is the original painting."],
+            ["Other", "अय", "अदर", "Do you have any other questions?"],
+            ["Otherwise", "अयथा", "अदरवाइज़", "Hurry up, otherwise you will be late."],
+            ["Ought", "चाहए", "ऑट", "You ought to respect elders."],
+            ["Our", "हमारा", "आवर", "This is our house."],
+            ["Ourselves", "खुद", "आवरसे ज़", "We did it ourselves."],
+            ["Out", "बाहर", "आउट", "Go out and play."],
+            ["Outcome", "परणाम", "आउटकम", "The outcome was positive."],
+            ["Outdoor", "बाहर", "आउटडोर", "I love outdoor activities."],
+            ["Outer", "बाहर", "आउटर", "The outer layer is hard."],
+            ["Output", "उपादन", "आउटपुट", "The output was excellent."],
+            ["Outside", "बाहर", "आउटसाइड", "Wait outside."],
+            ["Outstanding", "उकृ ट", "आउट टैि डंग", "She gave an outstanding performance."],
+            ["Over", "ऊपर", "ओवर", "The plane flew over the city."],
+            ["Overall", "कुल  मलाकर", "ओवरऑल", "Overall, the plan is good."],
+            ["Overcome", "पार पाना", "ओवरकम", "We will overcome all diAiculties."],
+            ["Overlook", "नज़रअंदाज़ करना", "ओवरलुक", "Don't overlook small details."],
+            ["Overseas", "वदेश", "ओवरसीज़", "He works overseas."],
+            ["Owe", "ऋणी होना", "ओ", "I owe you an apology."],
+            ["Own", "अपना", "ओन", "I have my own car."],
+            ["Owner", "मा लक", "ओनर", "He is the owner of this shop."],
+            ["Oxygen", "ऑसीजन", "ऑसीजन", "We need oxygen to breathe."],
+            // --- P Words ---
+            ["Pace", "गत", "पेस", "Slow down your pace."],
+            ["Pack", "पैक करना", "पैक", "Pack your bags."],
+            ["Package", "पैकेज", "पैकेज", "I received a package today."],
+            ["Page", "पृ ठ", "पेज", "Turn to page 10."],
+            ["Pain", "दद", "पेन", "I have a pain in my back."],
+            ["Paint", "रंग", "पे ट", "Paint the wall blue."],
+            ["Painting", "च", "पेि टंग", "This painting is beautiful."],
+            ["Pair", "जोड़ा", "पेयर", "I bought a pair of shoes."],
+            ["Palace", "महल", "पैलस", "The palace was magnificent."],
+            ["Pale", "पीला", "पेल", "She looked pale and tired."],
+            ["Pan", "कड़ाह", "पैन", "Heat the pan before cooking."],
+            ["Panel", "पैनल", "पैनल", "The panel discussed the issue."],
+            ["Panic", "घबराहट", "पैनक", "Don't panic, stay calm."],
+            ["Paper", "कागज़", "पेपर", "Write on both sides of the paper."],
+            ["Paragraph", "अनु छेद", "पैरा ाफ", "Write a paragraph on pollution."],
+            ["Parallel", "समानांतर", "पैरेलल", "Draw two parallel lines."],
+            ["Pardon", "मा", "पाडन", "Pardon me for interrupting."],
+            ["Parent", "माता- पता", "पैरे ट", "My parents are very supportive."],
+            ["Park", "पाक", "पाक", "Let's go to the park."],
+            ["Parliament", "संसद", "पा लयामे ट", "The parliament passed the bill."],
+            ["Part", "भाग", "पाट", "This is my favorite part."],
+            ["Participate", "भाग लेना", "पाट सपेट", "Everyone should participate."],
+            ["Particular", "वशेष", "पाटयुलर", "I have a particular reason."],
+            ["Partner", "साथी", "पाटनर", "She is my business partner."],
+            ["Party", "पाट", "पाट", "Are you coming to the party?"],
+            ["Pass", "पास होना", "पास", "I hope I pass the exam."],
+            ["Passage", "माग", "पैसेज", "Read the passage carefully."],
+            ["Passenger", "या ी", "पैसे जर", "The passenger sat by the window."],
+            ["Passion", "जुनून", "पैशन", "He has a passion for music."],
+            ["Passive", "नि य", "पै सव", "He has a passive personality."],
+            ["Passport", "पासपोट", "पासपोट", "I need to renew my passport."],
+            ["Past", "भूतकाल", "पा ट", "Leave the past behind."],
+            ["Path", "रा ता", "पाथ", "Follow the path to the river."],
+            ["Patient", "मरज़", "पेशट", "The patient is recovering."],
+            ["Pattern", "पैटन", "पैटन", "I like the pattern on this cloth."],
+            ["Pause", "ठहराव", "पॉज़", "Pause the video."],
+            ["Pay", "भुगतान करना", "पे", "Pay the bill at the counter."],
+            ["Payment", "भुगतान", "पेमे ट", "The payment is due tomorrow."],
+            ["Peace", "शांत", "पीस", "World peace is important."],
+            ["Peaceful", "शांतपूण", "पीसफुल", "The village is very peaceful."],
+            ["Peak", "शखर", "पीक", "We reached the peak of the mountain."],
+            ["Pen", "कलम", "पेन", "May I borrow your pen?"],
+            ["Penalty", "दंड", "पेनट", "The penalty for speeding is high."],
+            ["Pencil", "प सल", "पेि सल", "Write with a pencil."],
+            ["People", "लोग", "पीपल", "Many people came to the event."],
+            ["Per", "त", "पर", "The speed is 60 km per hour."],
+            ["Percent", "तशत", "पसट", "I scored 90 percent."],
+            ["Perfect", "उम", "पफट", "Your answer is perfect."],
+            ["Perform", "दशन करना", "पफॉम", "She will perform on stage."],
+            ["Performance", "दशन", "पफॉमस", "The performance was excellent."],
+            ["Perhaps", "शायद", "पहस", "Perhaps it will rain."],
+            ["Period", "अव ध", "पीरयड", "The rainy period lasts three months."],
+            ["Permanent", "थायी", "पमनट", "This is a permanent job."],
+            ["Permission", "अनुमत", "प मशन", "Do I have your permission?"],
+            ["Permit", "अनुमत देना", "प मट", "Smoking is not permitted here."],
+            ["Person", "यि त", "पसन", "He is a nice person."],
+            ["Personal", "नजी", "पसनल", "This is my personal opinion."],
+            ["Personality", "यि तव", "पसनै लट", "She has a charming personality."],
+            ["Perspective", "ि टकोण", "पपि टव", "From my perspective, you are right."],
+            ["Persuade", "मनाना", "पवड", "I tried to persuade him."],
+            ["Pet", "पालतू जानवर", "पेट", "I have a pet dog."],
+            ["Phase", "चरण", "फेज़", "We are in the first phase."],
+            ["Phenomenon", "घटना", "फनॉ मनन", "This is a strange phenomenon."],
+            ["Philosophy", "दशन", "फलॉसफ", "Philosophy makes you think."],
+            ["Phone", "फोन", "फोन", "I will call you on the phone."],
+            ["Photo", "फोटो", "फोटो", "Take a photo of me."],
+            ["Phrase", "वा यांश", "ेज़", "What does this phrase mean?"],
+            ["Physical", "शार रक", "फिजकल", "Physical exercise is important."],
+            ["Physics", "भौतक", "फिजस", "Physics is a challenging subject."],
+            ["Piano", "पयानो", "पयानो", "She plays the piano beautifully."],
+            ["Pick", "चुनना", "पक", "Pick any color you like."],
+            ["Picture", "च", "पचर", "Draw a picture of your family."],
+            ["Piece", "टुकड़ा", "पीस", "Give me a piece of cake."],
+            ["Pig", "सुअर", "पग", "The pig is a farm animal."],
+            ["Pile", "ढेर", "पाइल", "There is a pile of books."],
+            ["Pilot", "पायलट", "पाइलट", "The pilot landed the plane safely."],
+            ["Pin", "पन", "पन", "Use a pin to attach the paper."],
+            ["Pink", "गुलाबी", "पंक", "She wore a pink dress."],
+            ["Pipe", "पाइप", "पाइप", "Water flows through the pipe."],
+            ["Pitch", "पच", "पच", "The cricket pitch was wet."],
+            ["Pity", "दया", "पट", "What a pity!"],
+            ["Place", "थान", "लेस", "This is a beautiful place."],
+            ["Plain", "सादा", "लेन", "I prefer plain rice."],
+            ["Plan", "योजना", "लान", "What is your plan for tomorrow?"],
+            ["Plane", "हवाई जहाज", "लेन", "I will travel by plane."],
+            ["Planet", "ह", "लैनेट", "Earth is our planet."],
+            ["Plant", "पौधा", "ला ट", "Water the plants daily."],
+            ["Plastic", "लाि टक", "लाि टक", "Avoid using plastic bags."],
+            ["Plate", "लेट", "लेट", "Put the food on the plate."],
+            ["Platform", "लेटफॉम", "लैटफॉम", "Wait on the platform."],
+            ["Play", "खेलना", "ले", "Children love to play."],
+            ["Player", "खलाड़ी", "लेयर", "He is a famous cricket player."],
+            ["Pleasant", "सुखद", "लेजट", "The weather is pleasant."],
+            ["Please", "कृपया", "लज़", "Please help me."],
+            ["Pleasure", "आनंद", "लेजर", "It is my pleasure to help."],
+            ["Plenty", "चुर", "ले ट", "We have plenty of time."],
+            ["Plot", "कथानक", "लॉट", "The plot of the movie was good."],
+            ["Plus", "धन", "लस", "Two plus two is four."],
+            ["Pocket", "जेब", "पॉकेट", "I have money in my pocket."],
+            ["Poem", "क वता", "पोएम", "She wrote a beautiful poem."],
+            ["Poet", "क व", "पोएट", "Tagore was a great poet."],
+            ["Poetry", "काय", "पोए", "I love reading poetry."],
+            ["Point", "बंदु", "पॉइट", "That is a good point."],
+            ["Poison", "जहर", "पॉइज़न", "Some snakes have poison."],
+            ["Police", "पु लस", "पु लस", "Call the police immediately."],
+            ["Policy", "नीत", "पॉ लसी", "What is the company policy?"],
+            ["Polish", "पॉ लश", "पॉ लश", "Polish your shoes."],
+            ["Polite", "वन", "पॉलाइट", "Be polite to elders."],
+            ["Political", "राजनीतक", "पॉ लटकल", "This is a political issue."],
+            ["Politician", "राजनेता", "पॉ लटशन", "The politician gave a speech."],
+            ["Politics", "राजनीत", "पॉ लटस", "I am not interested in politics."],
+            ["Pollution", "दूषण", "पलूशन", "Air pollution is a big problem."],
+            ["Pool", "तालाब", "पूल", "Let's swim in the pool."],
+            ["Poor", "गरब", "पूर", "We should help the poor."],
+            ["Popular", "लोक य", "पॉयुलर", "This song is very popular."],
+            ["Population", "जनसं या", "पॉयुलेशन", "India has a large population."],
+            ["Port", "बंदरगाह", "पोट", "The ship arrived at the port."],
+            ["Position", "ि थत", "पोिज़शन", "What is your position in the company?"],
+            ["Positive", "सकारामक", "पॉिज़टव", "Stay positive always."],
+            ["Possess", "अ धकार रखना", "पज़ेस", "Do you possess a car?"],
+            ["Possession", "संप", "पज़ेशन", "This house is in my possession."],
+            ["Possibility", "संभावना", "पॉ सब लट", "There is a possibility of rain."],
+            ["Possible", "संभव", "पॉ सबल", "Is it possible to finish today?"],
+            ["Post", "पो ट", "पो ट", "I will post this letter."],
+            ["Pot", "बतन", "पॉट", "Put the pot on the stove."],
+            ["Potato", "आलू", "पटेटो", "I love potato chips."],
+            ["Potential", "मता", "पोटे शल", "She has great potential."],
+            ["Pound", "पाउंड", "पाउड", "One pound equals 0.45 kg."],
+            ["Pour", "डालना", "पोर", "Pour the tea into the cup."],
+            ["Poverty", "गरबी", "पॉवट", "Poverty is a major issue."],
+            ["Power", "शि त", "पावर", "Knowledge is power."],
+            ["Powerful", "शि तशाल", "पावरफुल", "The engine is very powerful."],
+            ["Practical", "यावहारक", "ैि टकल", "This is a practical solution."],
+            ["Practice", "अयास", "ैि टस", "Practice makes perfect."],
+            ["Praise", "शंसा", "ेज़", "Praise the Lord."],
+            ["Pray", "ाथना करना", "े", "I pray every morning."],
+            ["Precious", "बहुमू य", "ेशस", "Time is precious."],
+            ["Predict", "भ वयवाणी करना", "ड ट", "Can you predict the weather?"],
+            ["Prefer", "पसंद करना", "फर", "I prefer tea over coAee."],
+            ["Pregnant", "गभवती", "े नट", "She is pregnant with her first child."],
+            ["Prepare", "तैयार करना", "पेयर", "Prepare for the exam."],
+            ["Presence", "उपि थत", "ेज़स", "Your presence is requested."],
+            ["Present", "वतमान", "ेज़ट", "Be present in the moment."],
+            ["Preserve", "संर त करना", "ज़व", "We must preserve our culture."],
+            ["President", "रा पत", "ेिज़डे ट", "The president addressed the nation."],
+            ["Press", "दबाना", "ेस", "Press the button."],
+            ["Pressure", "दबाव", "ेशर", "I am under a lot of pressure."],
+            ["Pretend", "दखावा करना", "टे ड", "Don't pretend to be sick."],
+            ["Pretty", "सु ंदर", "ट", "She looks pretty today."],
+            ["Prevent", "रोकना", "वे ट", "Vaccines prevent diseases."],
+            ["Previous", "पछला", "ी वयस", "In the previous chapter."],
+            ["Price", "कमत", "ाइस", "What is the price of this?"],
+            ["Pride", "गव", "ाइड", "I take pride in my work."],
+            ["Priest", "पुजार", "ी ट", "The priest performed the ritual."],
+            ["Primary", "ाथ मक", "ाइमर", "Primary education is essential."],
+            ["Prime", "मु य", "ाइम", "This is a prime example."],
+            ["Prince", "राजकुमार", "स", "The prince married the princess."],
+            ["Princess", "राजकुमार", "सेस", "The princess lived in a castle."],
+            ["Principal", "धानाचाय", "ि सपल", "The principal gave a speech."],
+            ["Principle", "सधांत", "ि सपल", "Honesty is my principle."],
+            ["Print", "छापना", "ट", "Print this document."],
+            ["Prior", "पूव", "ायर", "I have a prior commitment."],
+            ["Priority", "ाथ मकता", "ायॉरट", "Safety is our top priority."],
+            ["Prison", "जेल", "ज़न", "He was sent to prison."],
+            ["Prisoner", "कैद", "ज़नर", "The prisoner escaped."],
+            ["Private", "नजी", "ाइवेट", "This is a private property."],
+            ["Prize", "पुरकार", "ाइज़", "She won the first prize."],
+            ["Probably", "शायद", "ॉबेबल", "It will probably rain."],
+            ["Problem", "समया", "ॉलम", "What is the problem?"],
+            ["Procedure", "या", "ोसीजर", "Follow the standard procedure."],
+            ["Proceed", "आगे बढ़ना", "ोसीड", "Proceed with caution."],
+            ["Process", "या", "ोसेस", "The process is very simple."],
+            ["Produce", "उपादन करना", "ो यूस", "This factory produces cars."],
+            ["Product", "उपाद", "ोड ट", "This is a new product."],
+            ["Production", "उपादन", "ोडशन", "Production has increased."],
+            ["Profession", "पेशा", "ोफेशन", "Teaching is a noble profession."],
+            ["Professional", "पेशेवर", "ोफेशनल", "He is a professional photographer."],
+            ["Professor", "ोफेसर", "ोफेसर", "The professor explained the topic."],
+            ["Profile", "ोफाइल", "ोफाइल", "Update your profile picture."],
+            ["Profit", "लाभ", "ॉ फट", "The company made a huge profit."],
+            ["Program", "काय म", "ो ैम", "What is today's program?"],
+            ["Progress", "गत", "ो ेस", "You are making good progress."],
+            ["Prohibit", "नषेध", "ोहबट", "Smoking is prohibited here."],
+            ["Project", "परयोजना", "ोजे ट", "I am working on a new project."],
+            ["Promise", "वादा", "ॉ मस", "I promise to come on time."],
+            ["Promote", "बढ़ावा देना", "मोट", "We need to promote education."],
+            ["Prompt", "तुरंत", "ॉ ट", "Please give a prompt reply."],
+            ["Pronounce", "उचारण", "नाउस", "How do you pronounce this word?"],
+            ["Proof", "सबूत", "ूफ", "Do you have any proof?"],
+            ["Proper", "उ चत", "ॉपर", "Wear proper clothes."],
+            ["Property", "संप", "ॉपट", "This is my property."],
+            ["Proportion", "अनुपात", "पोशन", "The proportion is correct."],
+            ["Proposal", "ताव", "पोज़ल", "He made a marriage proposal."],
+            ["Propose", "ताव रखना", "पोज़", "I propose a toast."],
+            ["Prospect", "संभावना", "ॉ पे ट", "The job prospects are good."],
+            ["Protect", "सुर ा करना", "ोटे ट", "We must protect the environment."],
+            ["Protection", "सुर ा", "ोटे शन", "Wear protection while playing."],
+            ["Protest", "वरोध", "ोटे ट", "The workers held a protest."],
+            ["Proud", "गव", "ाउड", "I am proud of my country."],
+            ["Prove", "साबत करना", "ूव", "Can you prove your point?"],
+            ["Provide", "दान करना", "ोवाइड", "We provide free education."],
+            ["Province", "ांत", "ॉ वस", "Punjab is a province."],
+            ["Psychology", "मनो व ान", "साइकोलजी", "Psychology is an interesting subject."],
+            ["Public", "सावजनक", "पिलक", "This is a public park."],
+            ["Publish", "का शत करना", "पिलश", "The book will publish next month."],
+            ["Pull", "खींचना", "पुल", "Pull the door, don't push."],
+            ["Pulse", "नाड़ी", "पस", "The doctor checked my pulse."],
+            ["Pump", "पंप", "पप", "The pump is not working."],
+            ["Punch", "मु का", "पंच", "He threw a punch."],
+            ["Punish", "दंड देना", "पनश", "The teacher will punish the naughty student."],
+            ["Punishment", "दंड", "पनशमे ट", "The punishment was severe."],
+            ["Pupil", "छा", "यू पल", "The pupil raised his hand."],
+            ["Purchase", "खरद", "पचज़", "I made a purchase online."],
+            ["Pure", "शु ध", "योर", "This water is pure."],
+            ["Purple", "बगनी", "पपल", "She wore a purple saree."],
+            ["Purpose", "उ दे य", "पपस", "What is the purpose of this?"],
+            ["Pursue", "पीछा करना", "पयू", "Pursue your dreams."],
+            ["Push", "धका", "पुश", "Push the door to open."],
+            ["Put", "रखना", "पुट", "Put the book on the table."],
+         ];
+
+        // ==================== STATE ====================
+        let currentTab = 'dictionary';
+        let currentCard = 0;
+        let learned = new Set();
+        let mastered = new Set();
+        let quizIndex = 0;
+        let quizScore = 0;
+        let typeIndex = 0;
+        let typeScore = 0;
+
+        // ==================== UTILITIES ====================
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function normalize(str) {
+            return str.toLowerCase().replace(/[^a-z0-9\u0900-\u097F]/g, '').trim();
+        }
+
+        // ==================== TAB NAVIGATION ====================
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tab).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            currentTab = tab;
+            if (tab === 'flashcards') updateFlashcard();
+            if (tab === 'quiz') initQuiz();
+            if (tab === 'typing') initTyping();
+        }
+
+        // ==================== DICTIONARY ====================
+        function renderWords(words = vocabulary) {
+            const list = document.getElementById('wordList');
+            list.innerHTML = words.map((w, i) => `
+                <div class="word-item" onclick="speak('${w[0]}')">
+                    <div class="en">${w[0]}</div>
+                    <div class="trans">🔊 ${w[2]}</div>
+                    <div class="hi">🇮🇳 ${w[1]}</div>
+                    <div class="ex">💬 "${w[3]}"</div>
+                </div>
+            `).join('');
+            updateStats();
+        }
+
+        function searchWords() {
+            const query = normalize(document.getElementById('searchInput').value);
+            const filtered = vocabulary.filter(w => 
+                normalize(w[0]).includes(query) || 
+                normalize(w[1]).includes(query) ||
+                normalize(w[2]).includes(query)
+            );
+            renderWords(filtered);
+        }
+
+        function updateStats() {
+            document.getElementById('totalWords').textContent = vocabulary.length;
+            document.getElementById('learnedWords').textContent = learned.size;
+            document.getElementById('masteredWords').textContent = mastered.size;
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = 'en-US';
+                window.speechSynthesis.speak(utter);
+            }
+        }
+
+        // ==================== FLASHCARDS ====================
+        function updateFlashcard() {
+            const w = vocabulary[currentCard];
+            document.getElementById('fcWord').textContent = w[0];
+            document.getElementById('fcWordBack').textContent = w[0];
+            document.getElementById('fcMeaning').textContent = w[1] + ' (' + w[2] + ')';
+            document.getElementById('fcExample').textContent = '"' + w[3] + '"';
+            document.getElementById('fcCurrent').textContent = currentCard + 1;
+            document.getElementById('fcTotal').textContent = vocabulary.length;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % vocabulary.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + vocabulary.length) % vocabulary.length;
+            updateFlashcard();
+        }
+
+        function markLearned() {
+            learned.add(currentCard);
+            updateStats();
+            nextCard();
+        }
+
+        // ==================== QUIZ ====================
+        let quizWords = [];
+        function initQuiz() {
+            quizWords = shuffle(vocabulary).slice(0, 10);
+            quizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizResult').classList.add('hidden');
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            if (quizIndex >= quizWords.length) {
+                showQuizResult();
+                return;
+            }
+            const w = quizWords[quizIndex];
+            document.getElementById('quizQuestion').textContent = `What is the Hindi meaning of "${w[0]}"?`;
+
+            // Generate 3 wrong options
+            const wrong = shuffle(vocabulary.filter(x => x[0] !== w[0])).slice(0, 3).map(x => x[1]);
+            const options = shuffle([w[1], ...wrong]);
+
+            document.getElementById('quizOptions').innerHTML = options.map(opt => `
+                <button class="quiz-option" onclick="checkAnswer(this, '${w[1]}')">${opt}</button>
+            `).join('');
+
+            document.getElementById('quizProgress').style.width = ((quizIndex / quizWords.length) * 100) + '%';
+        }
+
+        function checkAnswer(btn, correct) {
+            const buttons = document.querySelectorAll('.quiz-option');
+            buttons.forEach(b => {
+                b.disabled = true;
+                if (b.textContent === correct) b.classList.add('correct');
+            });
+
+            if (btn.textContent === correct) {
+                quizScore++;
+                mastered.add(vocabulary.indexOf(quizWords[quizIndex]));
+                updateStats();
+            } else {
+                btn.classList.add('wrong');
+            }
+
+            setTimeout(() => {
+                quizIndex++;
+                showQuizQuestion();
+            }, 1200);
+        }
+
+        function showQuizResult() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('quizResult').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = `${quizScore}/${quizWords.length}`;
+            const pct = (quizScore / quizWords.length) * 100;
+            let msg = '';
+            if (pct === 100) msg = '🏆 Perfect! You are a master!';
+            else if (pct >= 80) msg = '🌟 Excellent work!';
+            else if (pct >= 60) msg = '👍 Good job! Keep practicing.';
+            else msg = '📚 Keep learning! You will improve.';
+            document.getElementById('scoreMessage').textContent = msg;
+        }
+
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // ==================== TYPING ====================
+        let typeWords = [];
+        function initTyping() {
+            typeWords = shuffle(vocabulary).slice(0, 10);
+            typeIndex = 0;
+            typeScore = 0;
+            showTypeQuestion();
+        }
+
+        function showTypeQuestion() {
+            if (typeIndex >= typeWords.length) {
+                document.getElementById('typeContainer').innerHTML = `
+                    <div class="result-box">
+                        <h2>🎉 Complete!</h2>
+                        <div class="score">${typeScore}/${typeWords.length}</div>
+                        <button class="btn btn-primary" onclick="initTyping()" style="margin-top:20px;">Try Again</button>
+                    </div>
+                `;
+                return;
+            }
+            const w = typeWords[typeIndex];
+            document.getElementById('typeWord').textContent = w[0];
+            document.getElementById('typeHint').textContent = 'Hint: ' + w[2];
+            document.getElementById('typeInput').value = '';
+            document.getElementById('typeFeedback').textContent = '';
+            document.getElementById('typeProgress').style.width = ((typeIndex / typeWords.length) * 100) + '%';
+            document.getElementById('typeInput').focus();
+        }
+
+        function checkType() {
+            const input = normalize(document.getElementById('typeInput').value);
+            const correct = normalize(typeWords[typeIndex][1]);
+            const feedback = document.getElementById('typeFeedback');
+
+            if (input === correct || typeWords[typeIndex][1].includes(document.getElementById('typeInput').value.trim())) {
+                typeScore++;
+                mastered.add(vocabulary.indexOf(typeWords[typeIndex]));
+                updateStats();
+                feedback.innerHTML = '<span style="color:#4caf50;">✓ Correct!</span>';
+                setTimeout(() => { typeIndex++; showTypeQuestion(); }, 800);
+            } else {
+                feedback.innerHTML = '<span style="color:#f44336;">✗ Try again! Correct: ' + typeWords[typeIndex][1] + '</span>';
+            }
+        }
+
+        function skipType() {
+            typeIndex++;
+            showTypeQuestion();
+        }
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', (e) => {
+            if (currentTab === 'flashcards') {
+                if (e.key === 'ArrowRight') nextCard();
+                if (e.key === 'ArrowLeft') prevCard();
+                if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+            }
+        });
+
+        // ==================== INIT ====================
+        renderWords();
+        updateFlashcard();
+    </script>
+</body>
+</html>
